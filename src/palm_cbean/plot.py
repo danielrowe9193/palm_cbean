@@ -1,7 +1,9 @@
 from abc import ABC, abstractmethod
 import matplotlib.pyplot as plt
 import numpy as np
+
 from palmout import VolumePalmOut, PalmOutXY
+from pathlib import Path
 from topography import Topography
 
 
@@ -31,10 +33,10 @@ class PlotPalmOutXZ:
 class PlotPalmOutXY:
     """Plot a cross-section Palm Out xy object."""
 
-    def __init__(self, palmout: PalmOutXY, storage_directory: str, frame: int, figure_size: tuple = (8, 10)):
+    def __init__(self, palmout: PalmOutXY, storage_directory: str | Path, frame: int, figure_size: tuple = (8, 10)):
         """Initialize a PlotCrossSectionPalmOutXY."""
         self.palmout_xy = palmout
-        self.storage_directory = storage_directory
+        self.storage_directory = Path(storage_directory)
         self.frame = frame
 
         self.plot_data = self.palmout_xy.data.isel(time=self.frame)
@@ -67,7 +69,7 @@ class PlotPalmOutXY:
     def save_plot(self, ):
         """Save the plot to the specified storage directory."""
         frame_name = f"frame_{self.frame:05d}"
-        frame_path = f"{self.storage_directory}\\{frame_name}"
+        frame_path = self.storage_directory / frame_name
         plt.savefig(frame_path)
         plt.close()
 
@@ -98,78 +100,3 @@ class PlotTopography:
 
         return elevation_contour, elevation_contour_fill
 
-
-"""
-Dimensions:  (time: 6, zu_3d: 302, y: 1000, xu: 1000, yv: 1000, x: 1000,
-              zw_3d: 302)
-Coordinates:
-  * time     (time) timedelta64[ns] 48B 00:10:00.131999999 ... 01:00:01.002000
-  * zu_3d    (zu_3d) float64 2kB 0.0 5.0 15.0 ... 2.985e+03 2.995e+03 3.005e+03
-  * y        (y) float64 8kB 50.0 150.0 250.0 ... 9.975e+04 9.985e+04 9.995e+04
-  * xu       (xu) float64 8kB 0.0 100.0 200.0 ... 9.97e+04 9.98e+04 9.99e+04
-  * yv       (yv) float64 8kB 0.0 100.0 200.0 ... 9.97e+04 9.98e+04 9.99e+04
-  * x        (x) float64 8kB 50.0 150.0 250.0 ... 9.975e+04 9.985e+04 9.995e+04
-  * zw_3d    (zw_3d) float64 2kB 0.0 10.0 20.0 30.0 ... 2.99e+03 3e+03 3.01e+03
-Data variables:
-    u        (time, zu_3d, y, xu) float32 7GB ...
-    v        (time, zu_3d, yv, x) float32 7GB ...
-    w        (time, zw_3d, y, x) float32 7GB ...
-    wspeed   (time, zu_3d, y, x) float32 7GB ...
-    wdir     (time, zu_3d, y, x) float32 7GB ...
-    p        (time, zu_3d, y, x) float32 7GB ...
-Attributes: (12/27)
-    title:           PALM 25.04  run: bds_test9.00  host: default  2026-02-25...
-    Conventions:     CF-1.7
-    creation_time:   2026-02-25 12:42:54 -04
-    data_content:    3d
-    version:         1
-    origin_time:     2019-06-21 12:00:00 +00
-    ...              ...
-    source:          PALM 25.04
-    references:
-    keywords:
-    licence:
-    comment:
-    VAR_LIST:        ;u;v;w;wspeed;wdir;p;
-
-<xarray.Dataset> Size: 58MB
-Dimensions:   (y_xz: 4, time: 6, zu: 302, xu: 1000, zw: 302, x: 1000, yv_xz: 4)
-Coordinates:
-  * y_xz      (y_xz) float64 32B 250.0 2.05e+03 1.005e+04 5.005e+04
-  * time      (time) timedelta64[ns] 48B 00:10:00.131999999 ... 01:00:01.002000
-  * zu        (zu) float64 2kB 0.0 5.0 15.0 ... 2.985e+03 2.995e+03 3.005e+03
-  * xu        (xu) float64 8kB 0.0 100.0 200.0 ... 9.97e+04 9.98e+04 9.99e+04
-  * zw        (zw) float64 2kB 0.0 10.0 20.0 30.0 ... 2.99e+03 3e+03 3.01e+03
-  * x         (x) float64 8kB 50.0 150.0 250.0 ... 9.975e+04 9.985e+04 9.995e+04
-  * yv_xz     (yv_xz) float64 32B 200.0 2e+03 1e+04 5e+04
-Data variables:
-    ind_y_xz  (y_xz) float64 32B ...
-    u_xz      (time, zu, y_xz, xu) float32 29MB ...
-    w_xz      (time, zw, y_xz, x) float32 29MB ...
-Attributes: (12/27)
-    title:           PALM 25.04  run: bds_test9.00  host: default  2026-02-25...
-    Conventions:     CF-1.7
-    creation_time:   2026-02-25 12:42:54 -04
-    data_content:    xz
-    version:         1
-    origin_time:     2019-06-21 12:00:00 +00
-    ...              ...
-    source:          PALM 25.04
-    references:
-    keywords:
-    licence:
-    comment:
-    VAR_LIST:        ;u_xz;w_xz;
-"""
-
-# file_location = "C:\\Users\\drowe\\Downloads\\Raster\\Raster\\BRB_DEM_10M_UTM21N.tif"
-# storage_directory = "C:\\Users\\drowe"
-# bds_topo = Topography(file_location).make_shape_even.mask.flip.normalise_axes
-# print(bds_topo.shape)
-#
-# bds_palm_output = VolumePalmOut("C:\\Users\\drowe\\bds_test9_t58_slice.nc")
-# bds_palm_output_xy = bds_palm_output.xy_cross_section(z=4500)
-#
-# bds_palm_output_xy_plot = PlotPalmOutXZ(bds_palm_output_xy)
-# bds_palm_output_xy_plot.u_contour_plot()
-# plt.show()
