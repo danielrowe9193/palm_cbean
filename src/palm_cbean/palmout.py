@@ -37,6 +37,11 @@ class PalmOut(ABC):
 class PalmOutXZ(PalmOut):
     """Initialise a PalmOut that represents an XZ cross-section."""
 
+    def show_info(self):
+        """Print information about the PalmOut dataset."""
+        print(self.data)
+        return self
+
     def normalise(self) -> PalmOut:
         """Normalise x and z coordinates between 0 and 1."""
         self.x = (self.data.xu.values - self.data.xu.values.min()) / (self.data.xu.values.max() - self.data.xu.values.min())
