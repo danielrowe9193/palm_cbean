@@ -6,7 +6,7 @@ import tqdm
 from pathlib import Path
 
 
-def generate_frames_xy(palm_out: palmout.PalmOutXY, storage_directory: str) -> None:
+def generate_frames_xy(palm_out: palmout.PalmOutXY, storage_directory: str, zu_xy_index: int = 0) -> None:
     """Get the frames from the time values within the PalmOut file."""
     print("Generating frames...")
 
@@ -15,7 +15,7 @@ def generate_frames_xy(palm_out: palmout.PalmOutXY, storage_directory: str) -> N
     frames = tqdm.tqdm(palm_out.data.time.values)
     for frame, _ in enumerate(frames):
         po = plot.PlotPalmOutXY(palmout=palm_out, storage_directory=storage_dir, frame=frame)
-        po.wind_speed_contour_fill_plot(zu_xy_index=0)
+        po.wind_speed_contour_fill_plot(zu_xy_index=zu_xy_index)
         po.save_plot()
 
 
