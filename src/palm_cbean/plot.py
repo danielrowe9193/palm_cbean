@@ -1,6 +1,8 @@
-from abc import ABC, abstractmethod
+import time
+
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 
 from palmout import VolumePalmOut, PalmOutXY
 from pathlib import Path
@@ -48,16 +50,28 @@ class PlotPalmOutXY:
 
         wind_speed = self.plot_data.isel(zu_xy=zu_xy_index).wspeed_xy.values[::-1]
 
+        elapsed_time_ns = self.plot_data["time"].values
+
+        elapsed_time_s = elapsed_time_ns / np.timedelta64(1, 's')
+
         wind_speed_contour_fill = self.ax.contourf(
-            wind_speed, cmap="turbo", levels=np.linspace(0, 10, 11)
+            self.palmout_xy.x, self.palmout_xy.y, wind_speed, cmap="turbo", levels=np.linspace(0, 10, 101)
         )
 
         wind_speed_colour_bar = self.fig.colorbar(
             wind_speed_contour_fill
         )
+        wind_speed_colour_bar.set_ticks(
+            ticks=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        )
+        wind_speed_colour_bar.set_label(
+            "Wind Speed (m/s)"
+        )
 
         self.ax.set(
-            title="Wind Speed"
+            title=f"Wind Speed\nFrame {self.frame}\nElapsed Time {elapsed_time_s:.0f} s",
+            xlabel="x",
+            ylabel="y",
         )
 
         return wind_speed_contour_fill, wind_speed_colour_bar
