@@ -55,7 +55,7 @@ class PlotPalmOutXY:
         elapsed_time_s = elapsed_time_ns / np.timedelta64(1, 's')
 
         wind_speed_contour_fill = self.ax.contourf(
-            self.palmout_xy.x, self.palmout_xy.y, wind_speed, cmap="turbo", levels=np.linspace(0, 10, 101)
+            self.palmout_xy.x, self.palmout_xy.y, wind_speed, cmap="turbo", levels=np.linspace(0, 10, 21)
         )
 
         wind_speed_colour_bar = self.fig.colorbar(
