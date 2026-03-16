@@ -34,7 +34,7 @@ class PalmOut(ABC):
         return self
 
 
-class CrossSectionPalmOutXZ(PalmOut):
+class PalmOutXZ(PalmOut):
     """Initialise a PalmOut that represents an XZ cross-section."""
 
     def normalise(self) -> PalmOut:

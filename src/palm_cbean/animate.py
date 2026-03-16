@@ -19,6 +19,10 @@ def generate_frames_xy(palm_out: palmout.PalmOutXY, storage_directory: str, zu_x
         po.save_plot()
 
 
+def generate_frames_xz():
+    pass
+
+
 def animate(frame_storage_directory: str, gif_storage_directory: str, gif_name: str):
     """Generate animated gif of the frames"""
     print("Creating animated gif...\n")

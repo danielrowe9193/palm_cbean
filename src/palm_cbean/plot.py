@@ -69,7 +69,7 @@ class PlotPalmOutXY:
         )
 
         self.ax.set(
-            title=f"Wind Speed\nFrame {self.frame}\nElapsed Time {elapsed_time_s:.0f} s",
+            title=f"Wind Speed at {self.plot_data.isel(zu_xy=zu_xy_index).zu_xy.values} m\nFrame {self.frame}\nElapsed Time {elapsed_time_s:.0f} s",
             xlabel="x",
             ylabel="y",
         )
