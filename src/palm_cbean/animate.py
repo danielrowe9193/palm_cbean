@@ -33,4 +33,4 @@ def animate(frame_storage_directory: str, gif_storage_directory: str, gif_name: 
             image = imageio.imread(file)
             writer.append_data(image)
 
-    print(f"Animated GIF stored at {gif_storage_directory}\\{gif_name}")
+    print(f"Animated GIF stored at {gif_path}")
