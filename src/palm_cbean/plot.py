@@ -1,35 +1,67 @@
-import time
-
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
 
-from palmout import VolumePalmOut, PalmOutXY
+from palmout import PalmOutXY, PalmOutXZ
 from pathlib import Path
 from topography import Topography
 
 
 class PlotPalmOutXZ:
 
-    def __init__(self, palmout: VolumePalmOut):
-        """Initialise a plot with a PalmOut object"""
-        self.palmout = palmout
+    def __init__(self, palmout: PalmOutXZ, storage_directory: str | Path, frame: int):
+        """Initialize a PlotCrossSectionPalmOutXZ."""
+        self.palmout_xz = palmout
+        self.storage_directory = Path(storage_directory)
+        self.frame = frame
+
+        self.plot_data = self.palmout_xz.data.isel(time=self.frame)
 
         self.fig, self.ax = plt.subplots(figsize=(8, 10))
 
     def u_contour_plot(self):
         """Plots contour fill of the u component of the flow."""
-        u = self.palmout.data.u.values[::-1]
-        u_contour_fill = self.ax.contourf(u, cmap="RdBu", levels=200)
+        u = self.plot_data.u.values[::-1]
+        u_contour_fill = self.ax.contourf(u, cmap="RdBu", levels=20)
 
         self.ax.set(
-            title=f"Zonal Component of Flow at {self.palmout.z} m",
-            xlabel="x Direction", ylabel="y Direction"
+            title=f"Zonal Component of Flow at {self.plot_data["yv_xz"].values} m",
+            xlabel="x", ylabel="z"
         )
 
         self.ax.grid()
 
         return u_contour_fill
+
+    def wind_speed_contour_fill_plot(self, y_xz_index: int = 0):
+        """Generate contour plot at a given time index."""
+
+        wind_speed = self.plot_data.isel(y_xz=y_xz_index).wspeed_xz.values[::-1]
+
+        elapsed_time_ns = self.plot_data["time"].values
+
+        elapsed_time_s = elapsed_time_ns / np.timedelta64(1, 's')
+
+        wind_speed_contour_fill = self.ax.contourf(
+            self.palmout_xz.x, self.palmout_xz.y, wind_speed, cmap="turbo", levels=np.linspace(0, 10, 21)
+        )
+
+        wind_speed_colour_bar = self.fig.colorbar(
+            wind_speed_contour_fill
+        )
+        wind_speed_colour_bar.set_ticks(
+            ticks=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        )
+        wind_speed_colour_bar.set_label(
+            "Wind Speed (m/s)"
+        )
+
+        self.ax.set(
+            title=f"Wind Speed at {self.plot_data.isel(y_xz=y_xz_index).zu_xy.values} m\nFrame {self.frame}\nElapsed Time {elapsed_time_s:.0f} s",
+            xlabel="x",
+            ylabel="y",
+        )
+
+        return wind_speed_contour_fill, wind_speed_colour_bar
 
 
 class PlotPalmOutXY:
