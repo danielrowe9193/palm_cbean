@@ -24,7 +24,7 @@ class PlotPalmOutXZ:
         u_contour_fill = self.ax.contourf(u, cmap="RdBu", levels=20)
 
         self.ax.set(
-            title=f"Zonal Component of Flow at {self.plot_data["yv_xz"].values} m",
+            title=f"Zonal Component of Flow at {self.plot_data['yv_xz'].values} m",
             xlabel="x", ylabel="z"
         )
 
