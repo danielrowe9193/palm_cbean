@@ -63,6 +63,14 @@ class PlotPalmOutXZ:
 
         return wind_speed_contour_fill, wind_speed_colour_bar
 
+    def save_plot(self):
+        """Save the plot to the specified storage directory."""
+        frame_name = f"frame_{self.frame:05d}"
+        frame_path = self.storage_directory / frame_name
+        plt.savefig(frame_path)
+        plt.close()
+        print(f"Frame saved to {frame_path}")
+
 
 class PlotPalmOutXY:
     """Plot a cross-section Palm Out xy object."""
@@ -108,16 +116,17 @@ class PlotPalmOutXY:
 
         return wind_speed_contour_fill, wind_speed_colour_bar
 
-    def show_plot(self):
+    def _show_plot(self):
         """Show the plot."""
         plt.show()
 
-    def save_plot(self, ):
+    def save_plot(self):
         """Save the plot to the specified storage directory."""
         frame_name = f"frame_{self.frame:05d}"
         frame_path = self.storage_directory / frame_name
         plt.savefig(frame_path)
         plt.close()
+        print(f"Frame saved to {frame_path}")
 
 
 class PlotTopography:
