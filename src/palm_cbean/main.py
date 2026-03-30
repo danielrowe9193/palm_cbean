@@ -1,12 +1,11 @@
 import animate
 import palmout as po
-import sys
 
-data_input_filepath = sys.argv[1]
-frame_storage_directory = sys.argv[2]
-gif_storage_directory = sys.argv[3]
-zu_xy_index = int(sys.argv[4])
-gif_name = str(sys.argv[5])
+data_input_filepath = "path/to/palmoutdata/"
+frame_storage_directory = "/directory/to/store/frames"
+gif_storage_directory = "/directory/to/store/frames"
+zu_xy_index = 0
+gif_name = "nameofgif.gif"
 
 palmout_xy = po.PalmOutXY(palm_out_filepath=data_input_filepath)
 palmout_xy.normalise().add_normalised_coords_to_data()
