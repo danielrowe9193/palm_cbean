@@ -1,13 +1,24 @@
 import animate
 import palmout as po
+import sys
 
-filepath = "C:\\Users\\drowe\\flow_around_cube_cyclic_xy.000.nc"
-palmout_xy = po.PalmOutXY(palm_out_filepath=filepath)
+data_input_filepath = sys.argv[1]
+frame_storage_directory = sys.argv[2]
+gif_storage_directory = sys.argv[3]
+zu_xy_index = int(sys.argv[4])
+gif_name = str(sys.argv[5])
+
+palmout_xy = po.PalmOutXY(palm_out_filepath=data_input_filepath)
 palmout_xy.normalise().add_normalised_coords_to_data()
 
-storage_dir = "C:\\Users\\drowe\\palm_cbean_plot_test_1"
-animate.generate_frames_xy(palm_out=palmout_xy, storage_directory=storage_dir)
+animate.generate_frames_xy(
+    palm_out=palmout_xy,
+    storage_directory=frame_storage_directory,
+    zu_xy_index=zu_xy_index
+)
 
-frame_storage_directory = "C:\\Users\\drowe\\palm_cbean_plot_test_1"
-gif_storage_directory = "C:\\Users\\drowe"
-animate.animate(frame_storage_directory=gif_storage_directory, gif_storage_directory=gif_storage_directory, gif_name="flow_past_cubes.gif")
+animate.animate(
+    frame_storage_directory=frame_storage_directory,
+    gif_storage_directory=gif_storage_directory,
+    gif_name=gif_name
+)
