@@ -10,10 +10,10 @@ y_xz_index = 0
 gif_name = "nameofgif.gif"
 
 palmout_xy = po.PalmOutXY(palm_out_filepath=dataxy_input_filepath)
-palmout_xy.normalise().add_normalised_coords_to_data()
+palmout_xy.normalise().update_data_with_normalised_coords()
 
 palmout_xz = po.PalmOutXZ(palm_out_filepath=dataxz_input_filepath)
-palmout_xz.normalise().add_normalised_coords_to_data()
+palmout_xz.normalise().update_data_with_normalised_coords()
 
 animate.generate_frames_xy(
     palm_out=palmout_xy,

@@ -4,9 +4,10 @@ import plot
 import tqdm
 
 from pathlib import Path
+from src.palm_cbean.topography import Topography
 
 
-def generate_frames_xy(palm_out: palmout.PalmOutXY, storage_directory: str, zu_xy_index: int = 0) -> None:
+def generate_frames_xy(palm_out: palmout.PalmOutXY, topography: Topography, storage_directory: str, zu_xy_index: int = 0) -> None:
     """Get the frames from the time values within the PalmOut file."""
     print("Generating frames...")
 
@@ -14,7 +15,8 @@ def generate_frames_xy(palm_out: palmout.PalmOutXY, storage_directory: str, zu_x
 
     frames = tqdm.tqdm(palm_out.data.time.values)
     for frame, _ in enumerate(frames):
-        po = plot.PlotPalmOutXY(palmout=palm_out, storage_directory=storage_dir, frame=frame)
+        palmout_plot_obj = plot.PlotPalmOutXY(palmout=palm_out, storage_directory=storage_dir, frame=frame)
+        topo_plot_obj = plot.PlotTopography(topography=topography)
         po.wind_speed_contour_fill_plot(zu_xy_index=zu_xy_index)
         po.save_plot()
 

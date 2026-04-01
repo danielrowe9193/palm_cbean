@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-from palmout import PalmOutXY, PalmOutXZ
+from palmout import (PalmOutXY, PalmOutXZ)
 from pathlib import Path
 from topography import Topography
 
@@ -137,7 +137,7 @@ class PlotTopography:
         self.fig, self.ax = plt.subplots(figsize=(8, 10))
 
     def plot_elevation(
-            self, contour_levels=None
+            self, contour_levels: list | np.ndarray | None = None
     ):
         """Create a contour plot of topography."""
 

@@ -52,6 +52,8 @@ class Topography:
     def mask(self):
         """Mask missing values in the topography file"""
 
+        # Apply linear interpolation using the nearest members around the missing value grid point.
+
         self.elevation[self.elevation == -3.402823466385288598e+38] = 0
         self.elevation[self.elevation == -3.402820018375655977e+38] = 0
 
@@ -119,17 +121,3 @@ class Topography:
         )
 
         return self
-
-
-# file_location = "C:\\Users\\drowe\\Downloads\\Raster\\Raster\\BRB_DEM_10M_UTM21N.tif"
-# storage_directory = "C:\\Users\\drowe"
-# bds_topo = Topography(file_location).make_shape_even.mask.flip.downscale(100).normalise_axes
-#
-# print(bds_topo.resolution, bds_topo.elevation.shape)
-#
-# bds_topo.to_xarray()
-#
-# print(bds_topo.norm_x.shape, bds_topo.norm_y.shape, bds_topo.dataset)
-#
-# plt.contourf(bds_topo.dataset.elevation)
-# plt.show()

@@ -21,7 +21,6 @@ class PalmOut(ABC):
     def show_info(self):
         """Print information about the PalmOut dataset."""
         print(self.data)
-        return self
 
     @abstractmethod
     def normalise(self):
@@ -29,7 +28,7 @@ class PalmOut(ABC):
         return self
 
     @abstractmethod
-    def add_normalised_coords_to_data(self):
+    def update_data_with_normalised_coords(self):
         """Update the data of the PalmOut with the normalised coordinates."""
         return self
 
@@ -40,7 +39,6 @@ class PalmOutXZ(PalmOut):
     def show_info(self):
         """Print information about the PalmOut dataset."""
         print(self.data)
-        return self
 
     def normalise(self) -> PalmOut:
         """Normalise x and z coordinates between 0 and 1."""
@@ -48,7 +46,7 @@ class PalmOutXZ(PalmOut):
         self.z = (self.data.zu.values - self.data.zu.values.min()) / (self.data.zu.values.max() - self.data.zu.values.min())
         return self
 
-    def add_normalised_coords_to_data(self) -> PalmOut:
+    def update_data_with_normalised_coords(self) -> PalmOut:
         """Update the data of the PalmOut with the normalised coordinates."""
         self.data = self.data.assign_coords(norm_x=self.x)
         self.data = self.data.assign_coords(norm_z=self.z)
@@ -61,7 +59,6 @@ class PalmOutXY(PalmOut):
     def show_info(self):
         """Print information about the PalmOut dataset."""
         print(self.data)
-        return self
 
     def normalise(self) -> PalmOut:
         """Normalise x and y coordinates between 0 and 1."""
@@ -69,38 +66,9 @@ class PalmOutXY(PalmOut):
         self.y = (self.data.y.values - self.data.y.values.min()) / (self.data.y.values.max() - self.data.y.values.min())
         return self
 
-    def add_normalised_coords_to_data(self):
+    def update_data_with_normalised_coords(self):
         """Update the data of the PalmOut with the normalised coordinates."""
         self.data = self.data.assign_coords(norm_x=self.x)
         self.data = self.data.assign_coords(norm_y=self.y)
         return self
 
-
-class VolumePalmOut:
-    """A PalmOut object initialized using the Palm model output."""
-
-    def __init__(self, palm_out_filepath: str):
-        """
-        Initialise a PalmOut object with the specified filepath that contains the palm out file.
-        :param palm_out_filepath: The filepath in which the palm out file is stored.
-        """
-
-        self.palm_out_filepath = palm_out_filepath
-        self.data = xarray.open_dataset(self.palm_out_filepath)
-
-        self.z: int | None = None
-        self.t: int | None = None
-
-    def normalise(self):
-        """Normalise spatial coordinates between 0 and 1."""
-        pass
-
-    def xy_cross_section(self, z: int = 0, i_time: int = 0):
-        """Select a xy cross-section at a given level and time index."""
-        self.z = z
-        self.data = self.data.sel(zu_3d=z, zw_3d=z, method="nearest")
-        return self
-
-
-# bds_palm_output = CrossSectionPalmOutXZ("C:\\Users\\drowe\\bds_test9_xz.000.nc")
-# print(bds_palm_output.normalise().add_normalised_coords_to_data().data)
