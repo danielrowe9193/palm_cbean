@@ -52,6 +52,8 @@ class Topography:
             coords={"norm_x": ("x", norm_x), "norm_y": ("y", norm_y)},
         )
 
+        dataset = dataset.interpolate_na(dim="x", method="nearest").interpolate_na(dim="y", method="nearest")
+
         return dataset
 
     def mask(self) -> None:
