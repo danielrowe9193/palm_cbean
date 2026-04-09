@@ -1,18 +1,10 @@
 import numpy as np
 import rasterio
 import xarray as xr
+import utils
+
+from pathlib import Path
 from scipy.ndimage import zoom
-
-
-def make_even(data: np.ndarray) -> np.ndarray:
-    """Checks if any dimension of the array is odd and pads it so that it becomes even. PALM demands that the topography files have even dimensions."""
-    if data.shape[0] % 2 != 0:
-        data = np.pad(data, ((0, 1), (0, 0)), mode="constant")
-
-    if data.shape[1] % 2 != 0:
-        data = np.pad(data, ((0, 0), (0, 1)), mode="constant")
-
-    return data
 
 
 class Topography:
@@ -21,7 +13,7 @@ class Topography:
     def __init__(self, filepath: str):
         """Initialise a Topography object."""
 
-        self.filepath = filepath
+        self.filepath = Path(filepath)
         self.source = rasterio.open(self.filepath)
 
         self.elevation = self.source.read(1)
@@ -52,15 +44,16 @@ class Topography:
             coords={"norm_x": ("x", norm_x), "norm_y": ("y", norm_y)},
         )
 
-        dataset = dataset.interpolate_na(dim="x", method="nearest").interpolate_na(dim="y", method="nearest")
+        dataset = dataset.interpolate_na(dim="x", method="nearest").interpolate_na(
+            dim="y", method="nearest"
+        )
 
         return dataset
 
     def mask(self) -> None:
         """Mask missing values in the topography file"""
 
-        self.elevation[self.elevation == -3.402823466385288598e38] = np.nan
-        self.elevation[self.elevation == -3.402820018375655977e38] = np.nan
+        self.elevation[self.elevation < 0] = 0
 
         return None
 
@@ -74,7 +67,7 @@ class Topography:
     def make_shape_even(self) -> None:
         """Pads the elevation if the shape of any dimension is odd. This should be called after downscaling or padding."""
 
-        self.elevation = make_even(self.elevation)
+        self.elevation = utils.make_even(self.elevation)
 
         return None
 
@@ -99,12 +92,20 @@ class Topography:
         return None
 
     def to_ascii(self, output_directory: str, output_filename: str) -> None:
-        """Convert the elevation to ascii and store it at the given directory."""
+        """Convert the elevation to ascii and store it in the given directory."""
+
+        topography_file_name = f"{output_filename}_{1 / self.resolution}m_topo"
+
+        topography_file_directory = Path(output_directory)
+
+        topography_file_path = topography_file_directory / topography_file_name
 
         np.savetxt(
-            f"{output_directory}\\{output_filename}_{1 / self.resolution}m_topo",
-            self.elevation,
+            fname=topography_file_path,
+            X=self.elevation,
             fmt="%.1d",
         )
+
+        print(f"\nFile saved to {topography_file_path}\n")
 
         return None
