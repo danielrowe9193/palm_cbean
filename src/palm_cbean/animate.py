@@ -17,8 +17,9 @@ def generate_frames_xy(palm_out: palmout.PalmOutXY, topography: Topography, stor
     for frame, _ in enumerate(frames):
         palmout_plot_obj = plot.PlotPalmOutXY(palmout=palm_out, storage_directory=storage_dir, frame=frame)
         topo_plot_obj = plot.PlotTopography(topography=topography)
-        po.wind_speed_contour_fill_plot(zu_xy_index=zu_xy_index)
-        po.save_plot()
+        palmout_plot_obj.wind_speed_contour_fill_plot(zu_xy_index=zu_xy_index)
+        topo_plot_obj.plot_elevation()
+        palmout_plot_obj.save_plot()
 
     print(f"All frames generated and stored in {storage_directory}")
 

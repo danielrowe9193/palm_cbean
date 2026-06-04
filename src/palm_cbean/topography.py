@@ -8,7 +8,9 @@ from scipy.ndimage import zoom
 
 
 class Topography:
-    """A topography object."""
+    """
+    Object representing and containing utilities for preparing topography to be used with PALM.
+    """
 
     def __init__(self, filepath: str):
         """Initialise a Topography object."""
@@ -71,7 +73,7 @@ class Topography:
 
         return None
 
-    def pad(self, padding_amount: int):
+    def pad(self, padding_amount: int) -> None:
         """Adds padding around the original topography file."""
         pass
 

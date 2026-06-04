@@ -1,40 +1,25 @@
 import animate
-import palmout as po
+import matplotlib.pyplot as plt
+import palmout
+import plot
 
-dataxy_input_filepath = "path/to/palmoutdata_xy/"
-dataxz_input_filepath = "path/to/palmoutdata_xz/"
-frame_storage_directory = "/directory/to/store/frames"
-gif_storage_directory = "/directory/to/store/frames"
-zu_xy_index = 0
-y_xz_index = 0
-gif_name = "nameofgif.gif"
+from topography import Topography
 
-palmout_xy = po.PalmOutXY(palm_out_filepath=dataxy_input_filepath)
-palmout_xy.normalise().update_data_with_normalised_coords()
-
-palmout_xz = po.PalmOutXZ(palm_out_filepath=dataxz_input_filepath)
-palmout_xz.normalise().update_data_with_normalised_coords()
-
-animate.generate_frames_xy(
-    palm_out=palmout_xy,
-    storage_directory=frame_storage_directory,
-    zu_xy_index=zu_xy_index
+bds_topo = Topography(
+    filepath="C:\\Users\\drowe\\Desktop\\Welcome Daniel\\CIMH - f\\Research\\PALM\\Topography Files\\BRB_DEM_10M_UTM21N.tif"
 )
+bds_topo.make_shape_even()
+bds_topo.flip()
+bds_topo.mask()
+bds_topo.downscale(final_resolution=100)
 
-animate.animate(
-    frame_storage_directory=frame_storage_directory,
-    gif_storage_directory=gif_storage_directory,
-    gif_name=gif_name
-)
 
-animate.generate_frames_xz(
-    palm_out=palmout_xz,
-    storage_directory=frame_storage_directory,
-    y_xz_index=zu_xy_index
+palmout_xy = palmout.PalmOutXY(
+    palm_out_filepath="C:\\Users\\drowe\\flow_around_cube_cyclic_xy.000.nc"
 )
+palmout_xy.normalise()
+palmout_xy.update_data_with_normalised_coords()
 
-animate.animate(
-    frame_storage_directory=frame_storage_directory,
-    gif_storage_directory=gif_storage_directory,
-    gif_name=gif_name
-)
+plot.PlotTopography(bds_topo).plot_elevation()
+plt.show()
+
