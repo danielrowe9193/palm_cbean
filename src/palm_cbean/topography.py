@@ -1,123 +1,133 @@
-import matplotlib.pyplot as plt
 import numpy as np
 import rasterio
-import xarray
-from pyproj import Transformer
-from scipy.ndimage import zoom
+import xarray as xr
+import utils
 
-
-def make_even(data: np.ndarray):
-    """Checks if any dimension of the array is odd and pads it so that it becomes even. PALM demands that the topography files have even dimensions."""
-    if data.shape[0] % 2 != 0:
-        data = np.pad(data, ((0, 1), (0, 0)), mode='constant')
-
-    if data.shape[1] % 2 != 0:
-        data = np.pad(data, ((0, 0), (0, 1)), mode='constant')
-
-    return data
+from pathlib import Path
+from scipy.ndimage import (zoom, gaussian_filter)
 
 
 class Topography:
-    """A topography object."""
+    """
+    Object representing and containing utilities for preparing topography to be used with PALM.
+    """
 
     def __init__(self, filepath: str):
         """Initialise a Topography object."""
-        self.filepath = filepath
+
+        self.filepath = Path(filepath)
         self.source = rasterio.open(self.filepath)
 
         self.elevation = self.source.read(1)
         self.resolution = self.source.transform[0]
 
-        self.x, self.y = np.meshgrid(np.arange(self.source.height), np.arange(self.source.width), indexing="ij")
-
-        self.norm_x: np.ndarray | None = None
-        self.norm_y: np.ndarray | None = None
-
-        # self.x, self.y = rasterio.transform.xy(self.source.transform, self.rows, self.columns)
-        #
-        # self.transformer = Transformer.from_crs(self.source.crs, "EPSG:4326", always_xy=True)
-        # self._lon, self._lat = self.transformer.transform(self.x, self.y)
-        #
-        # self.latitude = np.array(self._lat).reshape(self.source.height, self.source.width)
-        # self.longitude = np.array(self._lon).reshape(self.source.height, self.source.width)
-
-        self.dataset: xarray.Dataset | None = None
+        self.x, self.y = np.meshgrid(
+            np.arange(self.source.height), np.arange(self.source.width), indexing="ij"
+        )
 
     @property
-    def shape(self):
+    def shape(self) -> tuple[int]:
         """The shape of the topography file."""
+
         return self.elevation.shape
 
     @property
-    def mask(self):
+    def dataset(self) -> xr.Dataset:
+        """
+        Stores the elevation data in a xarray Dataset.
+
+        Creates normalised coordinates between 0 and 1 for easy selection of data.
+        :return:
+        """
+
+        x = self.x[:, 0]
+        y = self.y[0, :]
+
+        norm_x = (x - x.min()) / (x.max() - x.min())
+        norm_y = (y - y.min()) / (y.max() - y.min())
+
+        dataset = xr.Dataset(
+            data_vars={"elevation": (("x", "y"), self.elevation)},
+            coords={
+                "x": ("x", x),
+                "y": ("y", y),
+                "norm_x": ("x", norm_x),
+                "norm_y": ("y", norm_y)
+            }
+        )
+
+        dataset = dataset.interpolate_na(dim="x", method="nearest").interpolate_na(
+            dim="y", method="nearest"
+        )
+
+        dataset = dataset.set_xindex("norm_x")
+        dataset = dataset.set_xindex("norm_y")
+
+        return dataset
+
+    def mask(self) -> None:
         """Mask missing values in the topography file"""
 
-        # Apply linear interpolation using the nearest members around the missing value grid point.
+        self.elevation[self.elevation < 0] = 0
 
-        self.elevation[self.elevation == -3.402823466385288598e+38] = 0
-        self.elevation[self.elevation == -3.402820018375655977e+38] = 0
+        return None
 
-        return self
-
-    @property
-    def flip(self):
+    def flip(self) -> None:
         """Flips the elevation array to match cardinal north."""
 
         self.elevation = self.elevation[::-1]
 
-        return self
+        return None
 
-    @property
-    def make_shape_even(self):
+    def make_shape_even(self) -> None:
         """Pads the elevation if the shape of any dimension is odd. This should be called after downscaling or padding."""
-        self.elevation = make_even(self.elevation)
 
-        return self
+        self.elevation = utils.Calculations.make_even(self.elevation)
 
-    @property
-    def normalise_axes(self):
-        """Normalise the x and y axes to fall between 0 and 1."""
-        x = self.x[:, 0]
-        y = self.y[0, :]
+        return None
 
-        self.norm_x = (x - x.min()) / (x.max() - x.min())
-        self.norm_y = (y - y.min()) / (y.max() - y.min())
-
-        return self
-
-    def pad(self, padding_amount: int):
+    def pad(self, padding_amount: int) -> None:
         """Adds padding around the original topography file."""
         pass
 
-    def downscale(self, final_resolution: int):
+    def downscale(self, final_resolution: int) -> None:
         """Downscale the topography file from the initial 10m resolution to a final resolution."""
 
         if final_resolution <= self.resolution:
-            raise ValueError(f"Final resolution cannot be equal to or less than the original resolution.")
+            raise ValueError(
+                f"Final resolution cannot be equal to or less than the original resolution."
+            )
 
         scale = self.resolution / final_resolution
         self.elevation = zoom(self.elevation, (scale, scale))
         self.x = zoom(self.x, (scale, scale))
         self.y = zoom(self.y, (scale, scale))
         self.resolution = self.resolution / scale
-        return self
 
-    def to_ascii(self, output_directory: str, output_filename: str):
-        """Convert the elevation to ascii and store it at the given directory."""
-        np.savetxt(f"{output_directory}\\{output_filename}_{1 / self.resolution}m_topo", self.elevation, fmt="%.1d")
-        return self
+        return None
 
-    def to_xarray(self):
-        """Construct a xarray dataset for the elevation data."""
+    def smooth(self):
+        """Smooth the topography by some amount."""
 
-        self.dataset = xarray.Dataset(
-            data_vars={
-                "elevation": (("x", "y"), self.elevation)
-            },
-            coords={
-                "norm_x": ("x", self.norm_x),
-                "norm_y": ("y", self.norm_y)
-            }
+        self.elevation = gaussian_filter(self.elevation, sigma=1.5)
+
+        return None
+
+    def to_ascii(self, output_directory: str, output_filename: str) -> None:
+        """Convert the elevation to ascii and store it in the given directory."""
+
+        topography_file_name = f"{output_filename}_{1 / self.resolution}m_topo"
+
+        topography_file_directory = Path(output_directory)
+
+        topography_file_path = topography_file_directory / topography_file_name
+
+        np.savetxt(
+            fname=topography_file_path,
+            X=self.elevation,
+            fmt="%.1d",
         )
 
-        return self
+        print(f"\nFile saved to {topography_file_path}\n")
+
+        return None
