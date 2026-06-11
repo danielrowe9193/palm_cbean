@@ -3,6 +3,7 @@ import rasterio
 import xarray as xr
 import utils
 
+from config import Constants
 from pathlib import Path
 from scipy.ndimage import (zoom, gaussian_filter)
 
@@ -107,9 +108,17 @@ class Topography:
         return None
 
     def smooth(self):
-        """Smooth the topography by some amount."""
+        """
+        Smooth the topography using a gaussian filter.
 
-        self.elevation = gaussian_filter(self.elevation, sigma=1.5)
+        This method should be called last, after downscaling, masking and similar methods have been applied.
+
+        The sigma levels for smoothing are controlled by the SIGMA parameter in the Constants object of the config module.
+        :return:
+        None
+        """
+
+        self.elevation = gaussian_filter(self.elevation, sigma=Constants.SIGMA)
 
         return None
 
