@@ -33,7 +33,12 @@ class Topography:
 
     @property
     def dataset(self) -> xr.Dataset:
-        """Construct and prepare a xarray dataset for the elevation data."""
+        """
+        Stores the elevation data in a xarray Dataset.
+
+        Creates normalised coordinates between 0 and 1 for easy selection of data.
+        :return:
+        """
 
         x = self.x[:, 0]
         y = self.y[0, :]
@@ -43,7 +48,12 @@ class Topography:
 
         dataset = xr.Dataset(
             data_vars={"elevation": (("x", "y"), self.elevation)},
-            coords={"norm_x": ("x", norm_x), "norm_y": ("y", norm_y)},
+            coords={
+                "x": ("x", x),
+                "y": ("y", y),
+                "norm_x": ("x", norm_x),
+                "norm_y": ("y", norm_y)
+            }
         )
 
         dataset = dataset.interpolate_na(dim="x", method="nearest").interpolate_na(
