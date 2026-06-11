@@ -60,6 +60,9 @@ class Topography:
             dim="y", method="nearest"
         )
 
+        dataset = dataset.set_xindex("norm_x")
+        dataset = dataset.set_xindex("norm_y")
+
         return dataset
 
     def mask(self) -> None:
