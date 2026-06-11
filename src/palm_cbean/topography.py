@@ -69,7 +69,7 @@ class Topography:
     def make_shape_even(self) -> None:
         """Pads the elevation if the shape of any dimension is odd. This should be called after downscaling or padding."""
 
-        self.elevation = utils.make_even(self.elevation)
+        self.elevation = utils.Calculations.make_even(self.elevation)
 
         return None
 
