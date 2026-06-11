@@ -4,7 +4,7 @@ import xarray as xr
 import utils
 
 from pathlib import Path
-from scipy.ndimage import zoom
+from scipy.ndimage import (zoom, gaussian_filter)
 
 
 class Topography:
@@ -90,6 +90,13 @@ class Topography:
         self.x = zoom(self.x, (scale, scale))
         self.y = zoom(self.y, (scale, scale))
         self.resolution = self.resolution / scale
+
+        return None
+
+    def smooth(self):
+        """Smooth the topography by some amount."""
+
+        self.elevation = gaussian_filter(self.elevation, sigma=1.5)
 
         return None
 

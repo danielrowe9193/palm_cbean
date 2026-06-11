@@ -157,7 +157,8 @@ class PlotTopography:
             self.topography.dataset.norm_y,
             self.topography.dataset.norm_x,
             self.topography.dataset.elevation,
-            cmap="terrain"
+            cmap="terrain",
+            levels=np.linspace(0, 400, 21)
         )
 
         self.ax.set_title("Plot Showing Relief of Barbados (m)")

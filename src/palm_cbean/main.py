@@ -1,5 +1,6 @@
 import animate
 import matplotlib.pyplot as plt
+import numpy as np
 import palmout
 import plot
 
@@ -12,6 +13,11 @@ bds_topo.make_shape_even()
 bds_topo.flip()
 bds_topo.mask()
 bds_topo.downscale(final_resolution=100)
+bds_topo.smooth()
+
+print(
+    bds_topo.dataset
+)
 
 
 palmout_xy = palmout.PalmOutXY(
@@ -20,6 +26,5 @@ palmout_xy = palmout.PalmOutXY(
 palmout_xy.normalise()
 palmout_xy.update_data_with_normalised_coords()
 
-plot.PlotTopography(bds_topo).plot_elevation()
-plt.show()
+plot.PlotTopography(bds_topo)
 
