@@ -68,7 +68,7 @@ class Topography:
     def mask(self) -> None:
         """Mask missing values in the topography file"""
 
-        self.elevation[self.elevation < 0] = 0
+        self.elevation[self.elevation < 0] = np.nan
 
         return None
 
