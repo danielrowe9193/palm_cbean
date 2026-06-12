@@ -69,7 +69,7 @@ class Topography:
     def mask(self) -> None:
         """Mask missing values in the topography file"""
 
-        self.elevation[self.elevation < 0] = np.nan
+        self.elevation[self.elevation < 0] = 0
 
         return None
 
@@ -92,7 +92,16 @@ class Topography:
         pass
 
     def downscale(self, final_resolution: int) -> None:
-        """Downscale the topography file from the initial 10m resolution to a final resolution."""
+        """
+        Downscale the topography file from the initial 10m resolution to a final resolution.
+
+        Currently, resolutions that are multiples of 10m are known to work with PALM, and
+        further testing is required for other resolutions and their compatibility with
+        PALM
+
+        :param final_resolution: The final resolution of the topography file, in meters.
+        :return: None
+        """
 
         if final_resolution <= self.resolution:
             raise ValueError(
