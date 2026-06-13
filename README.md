@@ -95,8 +95,8 @@ You will get `nx` and `ny` depending on the size of your domain that you set whe
 Then we define the size of our grid
 ```
 	dx                         = 2.0, ! Size of single gridbox in x-direction
-  dy                         = 2.0, ! Size of single gridbox in y-direction
-  dz                         = 2.0, ! Size of single gridbox in z-direction
+	dy                         = 2.0, ! Size of single gridbox in y-direction
+	dz                         = 2.0, ! Size of single gridbox in z-direction
 ```
 where the unit here is meters. 
 
@@ -110,8 +110,8 @@ Of course, nothing interesting can happen if we don't initialize the $u$ and $v$
 where of course you can set the wind flow to be whatever you like. Another defining aspect of our flow is the pressure gradient:
 
 ```
-  dp_external                = .F.,          ! use horizontal pressure gradient
-  dpdxy                      = -0.0002, 0.0, ! set pressure gradient along x
+	dp_external                = .F.,          ! use horizontal pressure gradient
+	dpdxy                      = -0.0002, 0.0, ! set pressure gradient along x
 ```
 
 where for our `toy_model` we set `dp_external` to false. `end_time` determines the simulation length, in seconds:
@@ -153,4 +153,10 @@ vi palm/logs/log.toy_model_exp1
 ```
 
 ## Accessing Results
-Once 
+Once PALM is completed, it will create a directory called `OUTPUT/` in the experiment directory:
+```bash
+/home/kratos-head/palm/current_version/JOBS/toy_model/OUTPUT/
+```
+In this directory will be all the `.nc` files that are created.
+
+## Visualization Using Python
