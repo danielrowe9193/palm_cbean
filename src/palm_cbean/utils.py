@@ -1,5 +1,12 @@
-import numpy as np
+from typing import Tuple
 
+import matplotlib.pyplot as plt
+import numpy as np
+import xarray as xr
+from matplotlib.colorbar import Colorbar
+from matplotlib.contour import QuadContourSet
+
+from config import PlotElements
 
 class Calculations:
 
@@ -20,6 +27,57 @@ class Calculations:
         pass
 
 
-class Plots:
+class PlotUtils:
+    """
+    Object containing utilities for the construction of most plots.
 
-    ...
+    The backbone of plotting functions exist here.
+    """
+
+    @staticmethod
+    def plot_contour_fill(
+            fig: plt.Figure,
+            ax: plt.Axes,
+            x_data: np.array | xr.DataArray,
+            y_data: np.array | xr.DataArray,
+            plot_data: np.array | xr.DataArray,
+            var: str,
+            title: str,
+            x_label: str,
+            y_label: str,
+            cmap: str
+    ) -> tuple[QuadContourSet, Colorbar]:
+        """
+        General utility for plotting contour fills of 2D data.
+
+        Also prepares the title of the plot, the x and y labels and the colorbar.
+
+        :param fig: The figure on which the plot should be made.
+        :param ax: The axis on which the plot should be made.
+        :param x_data: The x_data on which to populate the x_axis.
+        :param y_data: The y_data on which to populate the y_axis.
+        :param plot_data: The data used for plotting the contour fill.
+        :param var: The variable name that is being plotted.
+        :param title: The title of the plot.
+        :param x_label: The label of the x-axis.
+        :param y_label: The label of the y-axis.
+        :param cmap: The colormap to be used in the contourfill plot.
+        :return: The contour fill and associated colorbar.
+        """
+
+        var = PlotElements.plot_elements[var]
+
+        contour_fill = ax.contourf(
+            x_data,
+            y_data,
+            plot_data,
+            cmap=var["cmap"]
+        )
+
+        color_bar = fig.colorbar(
+            contour_fill,
+            label=var["title"] + var["units"]
+        )
+
+        return contour_fill, color_bar
+
