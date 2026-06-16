@@ -55,8 +55,7 @@ class PlotUtils:
             var: str,
             title: str,
             x_label: str,
-            y_label: str,
-            cmap: str
+            y_label: str
     ) -> tuple[QuadContourSet, Colorbar]:
         """
         General utility for plotting contour fills of 2D data.
@@ -72,7 +71,6 @@ class PlotUtils:
         :param title: The title of the plot.
         :param x_label: The label of the x-axis.
         :param y_label: The label of the y-axis.
-        :param cmap: The colormap to be used in the contourfill plot.
         :return: The contour fill and associated colorbar.
         """
 
@@ -89,6 +87,10 @@ class PlotUtils:
             contour_fill,
             label=var["title"] + var["units"]
         )
+
+        ax.set_title(title)
+        ax.set_xlabel(x_label)
+        ax.set_ylabel(y_label)
 
         return contour_fill, color_bar
 
