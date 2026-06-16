@@ -35,6 +35,17 @@ class PlotUtils:
     """
 
     @staticmethod
+    def save_plot(destination_directory: str, plot_name: str) -> None:
+        """
+        Saves the figure to the desired destination directory. Uses the default
+        plot storage directory in the config file.
+        :param destination_directory: The directory in which to store the plot
+        :param plot_name: The name of the plot. Should include the extension (.png, .jpeg, etc.)
+        :return: None.
+        """
+        ...
+
+    @staticmethod
     def plot_contour_fill(
             fig: plt.Figure,
             ax: plt.Axes,
@@ -80,4 +91,15 @@ class PlotUtils:
         )
 
         return contour_fill, color_bar
+
+    @staticmethod
+    def plot_terrain(
+            fig: plt.Figure,
+            ax:plt.Axes,
+            x_data: np.array | xr.DataArray,
+            y_data: np.array | xr.DataArray,
+            terrain_data: np.array | xr.DataArray,
+            var: str
+    ):
+        ...
 
