@@ -7,6 +7,7 @@ from matplotlib.colorbar import Colorbar
 from matplotlib.contour import QuadContourSet
 
 from config import PlotElements
+from typing import Literal
 
 class Calculations:
 
@@ -24,6 +25,17 @@ class Calculations:
     @staticmethod
     def normalise(data: np.ndarray) -> np.ndarray:
         """Normalise data between zero and one."""
+        pass
+
+    @staticmethod
+    def build_contour_levels(data: np.ndarray | xr.DataArray) -> np.ndarray:
+        """
+        Using the minimum and maximum values in the data to build contour levels that are of factor 10.
+
+
+        :param data:
+        :return:
+        """
         pass
 
 
@@ -49,9 +61,9 @@ class PlotUtils:
     def plot_contour_fill(
             fig: plt.Figure,
             ax: plt.Axes,
-            x_data: np.array | xr.DataArray,
-            y_data: np.array | xr.DataArray,
-            plot_data: np.array | xr.DataArray,
+            x_data: np.ndarray | xr.DataArray,
+            y_data: np.ndarray | xr.DataArray,
+            plot_data: np.ndarray | xr.DataArray,
             var: str,
             title: str,
             x_label: str,
@@ -80,12 +92,16 @@ class PlotUtils:
             x_data,
             y_data,
             plot_data,
-            cmap=var["cmap"]
+            cmap=var["cmap"],
+            levels=var["levels"]
         )
 
         color_bar = fig.colorbar(
             contour_fill,
-            label=var["title"] + var["units"]
+            label=var["long_name"] + var["units"]
+        )
+        color_bar.set_ticks(
+            var["cb_ticks"]
         )
 
         ax.set_title(title)
@@ -97,11 +113,62 @@ class PlotUtils:
     @staticmethod
     def plot_terrain(
             fig: plt.Figure,
-            ax:plt.Axes,
-            x_data: np.array | xr.DataArray,
-            y_data: np.array | xr.DataArray,
-            terrain_data: np.array | xr.DataArray,
-            var: str
+            ax: plt.Axes,
+            x_data: np.ndarray | xr.DataArray,
+            y_data: np.ndarray | xr.DataArray,
+            terrain_data: np.ndarray | xr.DataArray,
+            var: str | Literal["elevation"],
+            title: str,
+            x_label: str,
+            y_label: str,
     ):
-        ...
+        """
+        General utility for plotting terrain.
+
+        Includes a colour fill of the elevation and contours at levels specified in the config module.
+
+        Future functionality should expand to plot multiple islands.
+
+        Plots the title and the x and y labels of the plot, along with the colour bar.
+
+        :param fig: The figure on which the plot should be made.
+        :param ax: The current axis on which to create the plot
+        :param x_data: Data representing the x coordinate.
+        :param y_data: Data representing the y coordinate.
+        :param terrain_data: The elevation data.
+        :param var: The name of the variable to be plotted. Reveals access to PlotElements.
+        :param title: The title of the plot.
+        :param y_label: The label of the x-axis.
+        :param x_label: The label of the y-axis.
+        :return: None
+        """
+
+        var = PlotElements.plot_elements[var]
+
+        contour_lines = ax.contour(
+            y_data,
+            x_data,
+            terrain_data,
+            colors=var["colors"],
+            linewidths=var["linewidths"]
+        )
+
+        contour_fill = ax.contourf(
+            y_data,
+            x_data,
+            terrain_data,
+            cmap=var["cmap"],
+            levels=var["contour_fill_levels"]
+        )
+
+        color_bar = fig.colorbar(
+            contour_fill,
+            label=f"{var["long_name"]} [{var["units"]}]"
+        )
+
+        ax.set_title(title)
+        ax.set_xlabel(x_label)
+        ax.set_ylabel(y_label)
+
+        return contour_lines, contour_fill, color_bar
 
