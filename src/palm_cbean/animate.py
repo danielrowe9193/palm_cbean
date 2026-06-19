@@ -1,7 +1,6 @@
 import config
 import imageio.v2 as imageio
 import plot
-import tqdm
 
 from palmout import (
     PalmOutXZ, PalmOutXY
@@ -48,13 +47,14 @@ class Animator:
             storage_directory=self.temp_frame_storage,
         )
 
-        frames = tqdm.tqdm(self.palm_out.data.time.values, colour="white")
+        frames = self.palm_out.data.time.values, colour="white"
         for frame, _ in enumerate(frames):
 
             if variable == "wspeed":
                 palm_out_plot.wind_speed_contour_fill_plot(time_index=frame, zu_xy_index=zu_xy_index)
+                print(f"Frame {frame:4d} stored in {self.temp_frame_storage}")
 
-        print(f"All frames generated and stored in {self.temp_frame_storage}")
+        print(f"\nAll frames generated and stored in {self.temp_frame_storage}")
 
         return None
 
