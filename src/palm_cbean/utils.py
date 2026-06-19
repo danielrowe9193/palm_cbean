@@ -6,8 +6,10 @@ import xarray as xr
 from matplotlib.colorbar import Colorbar
 from matplotlib.contour import QuadContourSet
 
-from config import PlotElements
+from config import Constants, PlotElements
+from pathlib import Path
 from typing import Literal
+
 
 class Calculations:
 
@@ -47,15 +49,17 @@ class PlotUtils:
     """
 
     @staticmethod
-    def save_plot(destination_directory: str, plot_name: str) -> None:
+    def save_plot(storage_directory: str | Path, plot_name: str) -> None:
         """
-        Saves the figure to the desired destination directory. Uses the default
-        plot storage directory in the config file.
-        :param destination_directory: The directory in which to store the plot
+        Saves plot to the plot storage directory of the project.
+
+        :param storage_directory: The directory in which the plots should be stored.
         :param plot_name: The name of the plot. Should include the extension (.png, .jpeg, etc.)
         :return: None.
         """
-        ...
+        plot_path = storage_directory / plot_name
+        plt.savefig(plot_path)
+        plt.close()
 
     @staticmethod
     def plot_contour_fill(
