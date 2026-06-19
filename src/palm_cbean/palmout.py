@@ -7,7 +7,7 @@ from pathlib import Path
 class PalmOut(ABC):
     """Absract PalmOut class."""
 
-    def __init__(self, palm_out_filepath: str):
+    def __init__(self, palm_out_filepath: str | Path):
         """Initialize a PalmOut object with a specified filepath."""
         self.palm_out_filepath = Path(palm_out_filepath)
         self.data = xarray.open_dataset(self.palm_out_filepath, engine='netcdf4')
