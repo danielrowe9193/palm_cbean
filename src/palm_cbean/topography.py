@@ -173,7 +173,7 @@ class ToyTopography:
 
         self.size_of_domain = size_of_domain
 
-        self.topography = np.zeros(self.shape)
+        self.topography = np.zeros(self.size_of_domain)
 
     def add_building(self, x_span: tuple[int], y_span: tuple[int], height: int) -> None:
         """
@@ -192,7 +192,7 @@ class ToyTopography:
         :return:
         """
 
-        self.topography[x_span[0]:x_span[1], y_span[0], y_span[1]] = height
+        self.topography[x_span[0]:x_span[1], y_span[0]:y_span[1]] = height
 
         return None
 
