@@ -1,6 +1,8 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import utils
 
+from config import Constants
 from palmout import PalmOutXY, PalmOutXZ
 from pathlib import Path
 from topography import Topography
@@ -76,58 +78,56 @@ class PlotPalmOutXY:
         self,
         palmout: PalmOutXY,
         storage_directory: str | Path,
-        frame: int,
-        figure_size: tuple = (8, 10),
     ):
         """Initialize a PlotCrossSectionPalmOutXY."""
         self.palmout_xy = palmout
         self.storage_directory = Path(storage_directory)
-        self.frame = frame
 
-        self.plot_data = self.palmout_xy.data.isel(time=self.frame)
+    def wind_speed_contour_fill_plot(self, time_index: int, zu_xy_index: int = 0):
+        """
+        Plots the wind speed in the xy plane.
 
-        self.fig, self.ax = plt.subplots(figsize=figure_size)
+        Saves the figure to the plot directory.
 
-    def wind_speed_contour_fill_plot(self, zu_xy_index: int = 0):
-        """Generate contour plot at a given time index."""
+        :param time_index:
+        :param zu_xy_index:
+        :return:
+        """
 
-        wind_speed = self.plot_data.isel(zu_xy=zu_xy_index).wspeed_xy.values[::-1]
+        fig, ax = plt.subplots(figsize=(20, 10), constrained_layout=True, dpi=300)
 
-        elapsed_time_ns = self.plot_data["time"].values
+        plot_data = self.palmout_xy.data.isel(time=time_index)
+
+        wind_speed = plot_data.isel(zu_xy=zu_xy_index).wspeed_xy.values[::-1]
+
+        level = plot_data.isel(zu_xy=zu_xy_index).zu_xy.values
+
+        elapsed_time_ns = plot_data["time"].values
 
         elapsed_time_s = elapsed_time_ns / np.timedelta64(1, "s")
 
-        wind_speed_contour_fill = self.ax.contourf(
-            self.palmout_xy.x,
-            self.palmout_xy.y,
-            wind_speed,
-            cmap="turbo",
-            levels=np.linspace(0, 10, 21),
+        utils.PlotUtils.plot_contour_fill(
+            fig=fig,
+            ax=ax,
+            x_data=self.palmout_xy.x,
+            y_data=self.palmout_xy.y,
+            plot_data=wind_speed,
+            var="w_speed",
+            title=f"Wind Speed at {level} m\nFrame {time_index}\nElapsed Time {elapsed_time_s:.0f} s",
+            x_label="x",
+            y_label="y",
         )
 
-        wind_speed_colour_bar = self.fig.colorbar(wind_speed_contour_fill)
-        wind_speed_colour_bar.set_ticks(ticks=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
-        wind_speed_colour_bar.set_label("Wind Speed (m/s)")
+        frame_name = f"frame_{time_index:05d}.png"
 
-        self.ax.set(
-            title=f"Wind Speed at {self.plot_data.isel(zu_xy=zu_xy_index).zu_xy.values} m\nFrame {self.frame}\nElapsed Time {elapsed_time_s:.0f} s",
-            xlabel="x",
-            ylabel="y",
-        )
+        utils.PlotUtils.save_plot(storage_directory=self.storage_directory, plot_name=frame_name)
 
-        return wind_speed_contour_fill, wind_speed_colour_bar
+        return None
 
     @staticmethod
     def _show_plot():
         """Show the plot."""
         plt.show()
-
-    def save_plot(self):
-        """Save the plot to the specified storage directory."""
-        frame_name = f"frame_{self.frame:05d}"
-        frame_path = self.storage_directory / frame_name
-        plt.savefig(frame_path)
-        plt.close()
 
 
 class PlotTopography:
@@ -137,45 +137,46 @@ class PlotTopography:
     def __init__(self, topography: Topography):
         self.topography = topography
 
-        self.fig, self.ax = plt.subplots(figsize=(8, 10))
+        self.fig, self.ax = plt.subplots(figsize=(8, 10), dpi=300)
 
-    def plot_elevation(self, contour_levels: list | np.ndarray | None = None):
-        """Create a contour plot of topography."""
+    def plot_elevation(self) -> None:
+        """
+        Creates a plot of elevation of the topography.
 
-        if contour_levels is None:
-            contour_levels = [0, 1, 5, 10, 25, 50, 100, 200, 300, 400]
+        Displays a contour fill plot and contour lines and selected levels to indicate elevation.
 
-        elevation_contour = self.ax.contour(
-            self.topography.dataset.norm_y,
-            self.topography.dataset.norm_x,
-            self.topography.elevation,
-            levels=contour_levels,
-            colors="black",
-            linewidths=0.5,
+        Saves the figure to the plots directory of the palm_cbean project.
+
+        :return: None.
+        """
+
+        utils.PlotUtils.plot_terrain(
+            fig=self.fig,
+            ax=self.ax,
+            x_data=self.topography.dataset["norm_x"],
+            y_data=self.topography.dataset["norm_y"],
+            terrain_data=self.topography.dataset["elevation"],
+            var="elevation",
+            title="Elevation Map of Barbados",
+            x_label="Normalised x coordinate",
+            y_label="Normalised y coordinate"
         )
-        elevation_contour_fill = self.ax.contourf(
-            self.topography.dataset.norm_y,
-            self.topography.dataset.norm_x,
-            self.topography.dataset.elevation,
-            cmap="terrain",
-            levels=np.linspace(0, 400, 21)
-        )
 
-        self.ax.set_title("Plot Showing Relief of Barbados (m)")
-        self.ax.set_xlabel("Normalised x")
-        self.ax.set_ylabel("Normalised y")
+        plt.savefig(Constants.plot_storage_directory / "bds.elevation.png")
 
-        return elevation_contour, elevation_contour_fill
+        plt.close()
 
-    def plot_xz_cross_section(self, y: int | float) -> None:
+        return None
+
+    def plot_xz_cross_section(self, norm_y: int | float) -> None:
         """
         Plots a cross-section of the topography along a given y slice.
-        :param y: The normalised y coordinate on which to take the slice
+        :param norm_y: The normalised y coordinate on which to take the slice
         :return: None
         """
 
-        cross_section = self.topography.dataset.sel(norm_y=y, method="nearest")
+        cross_section = self.topography.dataset.sel(norm_y=norm_y, method="nearest")
 
         plt.plot(cross_section.elevation.values)
 
-        plt.show()
+        plt.savefig(Constants.plot_storage_directory / f"{norm_y}.xz_cross_section.png")
