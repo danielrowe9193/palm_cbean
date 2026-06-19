@@ -48,7 +48,7 @@ class Animator:
             storage_directory=self.temp_frame_storage,
         )
 
-        frames = tqdm.tqdm(self.palm_out.data.isel(time=slice(0, 20)).time.values, colour="white")
+        frames = tqdm.tqdm(self.palm_out.data.time.values, colour="white")
         for frame, _ in enumerate(frames):
 
             if variable == "wspeed":
