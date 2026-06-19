@@ -8,7 +8,10 @@ class PalmOut(ABC):
     """Absract PalmOut class."""
 
     def __init__(self, palm_out_filepath: str | Path):
-        """Initialize a PalmOut object with a specified filepath."""
+        """
+        Initialize a PalmOut object with a specified filepath.
+        :param palm_out_filepath: The filepath
+        """
         self.palm_out_filepath = Path(palm_out_filepath)
         self.data = xarray.open_dataset(self.palm_out_filepath, engine='netcdf4')
 
