@@ -1,56 +1,98 @@
+import config
 import imageio.v2 as imageio
-import palmout
 import plot
 import tqdm
 
+from palmout import (
+    PalmOutXZ, PalmOutXY
+)
 from pathlib import Path
-from src.palm_cbean.topography import Topography
 
 
-def generate_frames_xy(palm_out: palmout.PalmOutXY, topography: Topography, storage_directory: str, zu_xy_index: int = 0) -> None:
-    """Get the frames from the time values within the PalmOut file."""
-    print("Generating frames...")
+class Animator:
+    """
+    Utilities for animating outputs from PALM.
 
-    storage_dir = Path(storage_directory)
+    Creates animated GIFs of the simulation results.
+    """
 
-    frames = tqdm.tqdm(palm_out.data.time.values)
-    for frame, _ in enumerate(frames):
-        palmout_plot_obj = plot.PlotPalmOutXY(palmout=palm_out, storage_directory=storage_dir, frame=frame)
-        topo_plot_obj = plot.PlotTopography(topography=topography)
-        palmout_plot_obj.wind_speed_contour_fill_plot(zu_xy_index=zu_xy_index)
-        topo_plot_obj.plot_elevation()
-        palmout_plot_obj.save_plot()
+    def __init__(self, palm_out: PalmOutXY | PalmOutXZ, ):
+        """
+        Initialise the animator with PalmOut data.
 
-    print(f"All frames generated and stored in {storage_directory}")
+        Expects the data to be of type palmout.PalmOut and currently
+        animates _xy and _xz files.
+        :param palm_out: The PalmOut file to be animated.
+        """
+        self.palm_out = palm_out
+        self.temp_frame_storage = "../../plots/temp_frame_store/"
 
+    def generate_frames_xy(self, variable: str, zu_xy_index: int = 0):
+        """
+        Generates and stores frames to a temporary file store.
+        :param zu_xy_index: The vertical index of the _xy data to be animated.
+        :param variable: The variable to be plotted.
+        :return:
+        """
 
-def generate_frames_xz(palm_out: palmout.PalmOutXZ, storage_directory: str, y_xz_index: int = 0) -> None:
-    """Get the frames from the time values within the PalmOut file."""
-    print("Generating frames...")
+        if type(self.palm_out) is not PalmOutXY:
+            return TypeError("Expected type of PalmOut is PalmOutXY.")
 
-    storage_dir = Path(storage_directory)
+        Path(self.temp_frame_storage).mkdir(exist_ok=True)
+        print("Generated temporary frame storage directory.")
 
-    frames = tqdm.tqdm(palm_out.data.time.values)
-    for frame, _ in enumerate(frames):
-        po = plot.PlotPalmOutXZ(palmout=palm_out, storage_directory=storage_dir, frame=frame)
-        po.wind_speed_contour_fill_plot(y_xz_index=y_xz_index)
-        po.save_plot()
+        print("Generating frames ... ")
 
-    print(f"All frames generated and stored in {storage_directory}")
+        palm_out_plot = plot.PlotPalmOutXY(
+            palmout=self.palm_out,
+            storage_directory=self.temp_frame_storage,
+        )
 
+        frames = tqdm.tqdm(self.palm_out.data.isel(time=slice(0, 20)).time.values, colour="white")
+        for frame, _ in enumerate(frames):
 
-def animate(frame_storage_directory: str, gif_storage_directory: str, gif_name: str):
-    """Generate animated gif of the frames"""
-    print("Creating animated gif...\n")
+            if variable == "wspeed":
+                palm_out_plot.wind_speed_contour_fill_plot(time_index=frame, zu_xy_index=zu_xy_index)
 
-    frame_dir = Path(frame_storage_directory)
-    gif_path = Path(gif_storage_directory) / gif_name
+        print(f"All frames generated and stored in {self.temp_frame_storage}")
 
-    files = frame_dir.glob("*.png")
+        return None
 
-    with imageio.get_writer(gif_path, mode="I", duration=0.2) as writer:
-        for file in files:
-            image = imageio.imread(file)
-            writer.append_data(image)
+    def generate_frames_zy(self, storage_directory: str, y_xz_index: int = 0):
+        ...
 
-    print(f"Animated GIF stored at {gif_path}")
+    def animate_gif(self, gif_name: str, new_frame_directory_name: str | Path, keep_frames: bool = False):
+        """
+        Creates an animated gif using the frames stored in the temporary frame store.
+        By default, this method will delete the temporary frame store.
+        Stores the animated gif in the plots directory of the project.
+
+        WARNING: This method should be called only after frames have been generated to the temporary frame storage directory.
+
+        :param gif_name: The name of the animated GIF.
+        :param new_frame_directory_name: The name of directory frames should be stored in, if keep_frames=True.
+        :param keep_frames: Determines if to keep the temporary frame store or not.
+        :return:
+        """
+
+        print("Creating animated gif...\n")
+
+        new_frame_directory = Path(f"../../plots/{new_frame_directory_name}")
+
+        if keep_frames is not False:
+            frame_dir = Path(self.temp_frame_storage).rename(new_frame_directory)
+            print(f"\nkeep_frames=True. Frames are being stored at {frame_dir}.\n")
+        else:
+            frame_dir = Path(self.temp_frame_storage)
+            print(f"\nkeep_frames=False. The frames will remain in the temporary frame store.")
+
+        gif_path = config.Constants.plot_storage_directory / gif_name
+
+        with imageio.get_writer(gif_path, mode="I", duration=0.2) as writer:
+            for file in frame_dir.iterdir():
+                image = imageio.imread(file)
+                writer.append_data(image)
+
+        print(f"Animated GIF stored at {gif_path}")
+
+        return None
