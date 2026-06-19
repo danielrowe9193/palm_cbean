@@ -81,10 +81,10 @@ class Animator:
 
         if keep_frames is not False:
             frame_dir = Path(self.temp_frame_storage).rename(new_frame_directory)
-            print(f"\nkeep_frames=True. Frames are being stored at {frame_dir}.\n")
+            print(f"keep_frames=True. Frames are being stored at {frame_dir}.\n")
         else:
             frame_dir = Path(self.temp_frame_storage)
-            print(f"\nkeep_frames=False. The frames will remain in the temporary frame store.")
+            print(f"keep_frames=False. The frames will remain in the temporary frame store.")
 
         gif_path = config.Constants.plot_storage_directory / gif_name
 

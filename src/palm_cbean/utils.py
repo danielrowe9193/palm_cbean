@@ -188,6 +188,7 @@ class DirectoryManagement:
         Checks if a data/ directory exists in the package.
 
         If not, it creates the directory.
+
         :return: None
         """
 
@@ -205,6 +206,7 @@ class DirectoryManagement:
         Checks if a plots/ directory exists in the package.
 
         If not, it creates the directory.
+
         :return: None
         """
 
