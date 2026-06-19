@@ -191,7 +191,11 @@ class DirectoryManagement:
         :return: None
         """
 
-        Path("../../data/").mkdir(exist_ok=True)
+        if Path("../../data/").exists() is True:
+            print("data/ directory already present. No action taken.\n")
+        else:
+            print("data/ directory not present. Creating data/ directory.")
+            Path("../../data/").mkdir(exist_ok=True)
 
         return None
 
@@ -204,6 +208,10 @@ class DirectoryManagement:
         :return: None
         """
 
-        Path("../../plots/").mkdir(exist_ok=True)
+        if Path("../../plots/").exists() is True:
+            print("data/ directory already present. No action taken.\n")
+        else:
+            print("data/ directory not present. Creating data/ directory.")
+            Path("../../plots/").mkdir(exist_ok=True)
 
         return None
