@@ -176,3 +176,34 @@ class PlotUtils:
 
         return contour_lines, contour_fill, color_bar
 
+
+class DirectoryManagement:
+    """
+    Utilities for handling directories associated with the palm_cbean package.
+    """
+
+    @staticmethod
+    def make_data_directory():
+        """
+        Checks if a data/ directory exists in the package.
+
+        If not, it creates the directory.
+        :return: None
+        """
+
+        Path("../../data/").mkdir(exist_ok=True)
+
+        return None
+
+    @staticmethod
+    def make_plots_directory():
+        """
+        Checks if a plots/ directory exists in the package.
+
+        If not, it creates the directory.
+        :return: None
+        """
+
+        Path("../../plots/").mkdir(exist_ok=True)
+
+        return None
