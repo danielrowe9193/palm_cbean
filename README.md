@@ -160,3 +160,27 @@ Once PALM is completed, it will create a directory called `OUTPUT/` in the exper
 In this directory will be all the `.nc` files that are created.
 
 ## Visualization Using Python
+Visualization of palm output files is facilitated using a package of post-processing python scripts called `palm_cbean`. To access the package we must clone the github repository to our machine using
+```bash
+git clone https://github.com/danielrowe9193/palm_cbean.git
+```
+For this example, the latest version of `palm_cbean` is already on `kratos-head` and the scripts are set up for visualization. When cloning the git respository is successful, create the directories `data/` and `plots/` using
+```bash
+mkdir data plots
+```
+This step is already completed and the directories should be already there for your perusal. Then, copy the `xy` file you want to visualize into the `data/` directory of the project (`_xz` visualization coming soon). Once this is completed, edit `main.py` such that
+```python
+palmout_xy = palmout.PalmOutXY(
+    palm_out_filepath=Path("../../data/{name_of_your_data.nc}")
+)
+```
+and 
+```python
+gif_anim.generate_frames_xy(variable="{variable_to_visualize}", zu_xy_index={index_of_vertical_level})
+gif_anim.animate_gif(gif_name="{name_of_gif.gif}", new_frame_directory_name="{name_of_directory_to_store_frames}", keep_frames=False)
+```
+Once all variables are edited sufficiently, run the python script using
+```bash
+python main.py &> log.main &
+```
+Where the visualization will take place in the background and progress will be noted in `log.main`. 
