@@ -1,6 +1,7 @@
 import config
 import imageio.v2 as imageio
 import plot
+import utils
 
 from palmout import (
     PalmOutXZ, PalmOutXY
@@ -29,6 +30,7 @@ class Animator:
     def generate_frames_xy(self, variable: str, zu_xy_index: int = 0):
         """
         Generates and stores frames to a temporary file store.
+
         :param zu_xy_index: The vertical index of the _xy data to be animated.
         :param variable: The variable to be plotted.
         :return:
@@ -95,4 +97,20 @@ class Animator:
 
         print(f"Animated GIF stored at {gif_path}")
 
+        utils.DirectoryManagement.clear_temp_frame_dir()
+
         return None
+
+    def animate_mp4(self, mp4_name: str, new_frame_directory_name: str |Path, keep_frames: bool = False):
+        """
+        Creates MP4 video using the frames stored in the temporary frame store.
+        By default, this method will delete the temporary frame store.
+        Stores the animated gif in the plots directory of the project.
+
+        WARNING: This method should be called only after frames have been generated to the temporary frame storage directory.
+
+        :param mp4_name: The name of the animated GIF.
+        :param new_frame_directory_name: The name of directory frames should be stored in, if keep_frames=True.
+        :param keep_frames: Determines if to keep the temporary frame store or not.
+        :return:
+        """
