@@ -1,6 +1,7 @@
 import config
 import imageio.v2 as imageio
 import plot
+import subprocess
 import utils
 
 from palmout import (
@@ -114,3 +115,36 @@ class Animator:
         :param keep_frames: Determines if to keep the temporary frame store or not.
         :return:
         """
+        
+        print("Creating MP4 video ... \n")
+        
+        new_frame_directory = Path(f"../../plots/{new_frame_directory_name}")
+        
+        if keep_frames is not False:
+            frame_dir = Path(self.temp_frame_storage).rename(new_frame_directory)
+            print(f"keep_frames=True. Frames are being stored at {frame_dir}.\n")
+        else:
+            frame_dir = Path(self.temp_frame_storage)
+            print(f"keep_frames=False. The frames will remain in the temporary frame store.")
+
+        subprocess.run(
+            [
+                "ffmpeg",
+                "-framerate", "5",
+                "-i", "frame_%04d.png",
+                "-c:v", "libx264",
+                "-pix_fmt", "yuv420p",
+                str(output)
+            ],
+            cwd=self.temp_frame_storage,
+            check=True,
+        )
+        
+        print(f"Animated GIF stored at {gif_path}")
+
+        utils.DirectoryManagement.clear_temp_frame_dir()
+
+        return None
+
+        
+        
