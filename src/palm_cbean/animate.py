@@ -17,7 +17,7 @@ class Animator:
     Creates animated GIFs of the simulation results.
     """
 
-    def __init__(self, palm_out: PalmOutXY | PalmOutXZ, ):
+    def __init__(self, palm_out: PalmOutXY | PalmOutXZ):
         """
         Initialise the animator with PalmOut data.
 
@@ -50,7 +50,7 @@ class Animator:
             storage_directory=self.temp_frame_storage,
         )
 
-        frames = self.palm_out.data.time.values, colour="white"
+        frames = self.palm_out.data.time.values
         for frame, _ in enumerate(frames):
 
             if variable == "wspeed":
@@ -102,7 +102,7 @@ class Animator:
 
         return None
 
-    def animate_mp4(self, mp4_name: str, new_frame_directory_name: str |Path, keep_frames: bool = False):
+    def animate_mp4(self, mp4_name: str, new_frame_directory_name: str | Path, keep_frames: bool = False):
         """
         Creates MP4 video using the frames stored in the temporary frame store.
         By default, this method will delete the temporary frame store.
@@ -119,6 +119,8 @@ class Animator:
         print("Creating MP4 video ... \n")
         
         new_frame_directory = Path(f"../../plots/{new_frame_directory_name}")
+
+        mp4_file_path = config.Constants.plot_storage_directory / mp4_name
         
         if keep_frames is not False:
             frame_dir = Path(self.temp_frame_storage).rename(new_frame_directory)
@@ -131,16 +133,16 @@ class Animator:
             [
                 "ffmpeg",
                 "-framerate", "5",
-                "-i", "frame_%04d.png",
+                "-i", "frame_%05d.png",
                 "-c:v", "libx264",
                 "-pix_fmt", "yuv420p",
-                str(output)
+                str(mp4_file_path)
             ],
             cwd=self.temp_frame_storage,
             check=True,
         )
         
-        print(f"Animated GIF stored at {gif_path}")
+        print(f"Animated GIF stored at {mp4_file_path}")
 
         utils.DirectoryManagement.clear_temp_frame_dir()
 

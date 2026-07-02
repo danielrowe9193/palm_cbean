@@ -41,7 +41,8 @@ palmout_xy.update_data_with_normalised_coords()
 # )
 # plot.wind_speed_contour_fill_plot(time_index=20, zu_xy_index=2)
 
-gif_anim = animate.Animator(palm_out=palmout_xy)
-# gif_anim.generate_frames_xy(variable="wspeed", zu_xy_index=2)
+anim = animate.Animator(palm_out=palmout_xy)
+anim.generate_frames_xy(variable="wspeed", zu_xy_index=2)
 # gif_anim.animate_gif(gif_name="test.gif", new_frame_directory_name="toy_model_xy.002", keep_frames=False)
+anim.animate_mp4(mp4_name="test.mp4", new_frame_directory_name="toy_model_xy.002")
 
