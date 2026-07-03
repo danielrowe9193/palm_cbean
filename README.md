@@ -31,9 +31,9 @@ Run the command `pwd` while in the `INPUT/` directory. You should see the follow
 which means all directories have been created as required.
 
 ## Creating Topography Files
-Our experiment `toy_model` investigates the flow of wind around some buildings. To this end, we must create a topography file that contains the buildings and ingest this into PALM. Navigate to `intern_python`
+Our experiment `toy_model` investigates the flow of wind around some buildings. To this end, we must create a topography file that contains the buildings and ingest this into PALM. Navigate to `internpython`
 ```bash
-cd PythonRelated/intern_python
+cd PythonRelated/internpython
 ```
 Next, we must activate the Python virtual environment (venv). Virtual environments act as isolated workspaces for Python projects, allowing packages to be installed and managed separately from the system's default Python installation. This helps keep projects organized and avoids conflicts between package versions. Activate the venv using
 ```bash
