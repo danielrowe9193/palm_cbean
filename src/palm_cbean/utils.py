@@ -52,6 +52,20 @@ class Calculations:
 
         return lvls
 
+    @staticmethod
+    def calculate_elapsed_time(data: xr.Dataset):
+        """
+        Calculates the elapsed time in seconds.
+        :param data: Data that contains times. Expects the name of the time dimension to be 'time'.
+        :return: New time data in seconds.
+        """
+
+        elapsed_time_ns = data["time"].values
+
+        elapsed_time_s = elapsed_time_ns / np.timedelta64(1, "s")
+
+        return elapsed_time_s
+
 
 class PlotUtils:
     """
