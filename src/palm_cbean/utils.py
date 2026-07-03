@@ -30,15 +30,27 @@ class Calculations:
         pass
 
     @staticmethod
-    def build_contour_levels(data: np.ndarray | xr.DataArray) -> np.ndarray:
+    def build_contour_levels(data: np.ndarray, step: int, round_to_nearest: int) -> np.ndarray:
         """
         Using the minimum and maximum values in the data to build contour levels that are of factor 10.
 
 
+        :param step:
         :param data:
         :return:
         """
-        pass
+
+        max_val = data.max()
+
+        min_val = data.min()
+
+        max_up = np.ceil(max_val / round_to_nearest) * round_to_nearest
+
+        min_down = np.ceil(min_val / round_to_nearest) * round_to_nearest
+
+        lvls = np.arange(start=min_down, stop=max_up, step=step)
+
+        return lvls
 
 
 class PlotUtils:
@@ -167,7 +179,7 @@ class PlotUtils:
 
         color_bar = fig.colorbar(
             contour_fill,
-            label=f"{var["long_name"]} [{var["units"]}]"
+            label=f"{var['long_name']} [{var['units']}]"
         )
 
         ax.set_title(title)
@@ -195,7 +207,7 @@ class DirectoryManagement:
         if Path("../../data/").exists() is True:
             print("data/ directory already present. No action taken.\n")
         else:
-            print("data/ directory not present. Creating data/ directory.")
+            print("data/ directory not present. Creating data/ directory.\n")
             Path("../../data/").mkdir(exist_ok=True)
 
         return None
@@ -211,9 +223,30 @@ class DirectoryManagement:
         """
 
         if Path("../../plots/").exists() is True:
-            print("data/ directory already present. No action taken.\n")
+            print("plots/ directory already present. No action taken.\n")
         else:
-            print("data/ directory not present. Creating data/ directory.")
+            print("plots/ directory not present. Creating data/ directory.\n")
             Path("../../plots/").mkdir(exist_ok=True)
 
         return None
+
+    @staticmethod
+    def clear_temp_frame_dir():
+        """
+        Clears frames in the temporary frame store from the previous animation run.
+
+        This method necessary because overwriting existing frames in the directory won't work if the
+        new amount of frames is less than the current amount of frames in the temporary directory store.
+
+        :return:
+        """
+
+        print("Deleting frames from previous animation...\n")
+
+        for frame in Path("../../plots/temp_frame_store").iterdir():
+            Path(f"../../plots/temp_frame_store/{frame}").unlink()
+
+        return None
+
+
+

@@ -94,7 +94,7 @@ class PlotPalmOutXY:
         :return:
         """
 
-        fig, ax = plt.subplots(figsize=(20, 10), constrained_layout=True, dpi=300)
+        fig, ax = plt.subplots(figsize=(10, 10), constrained_layout=True)
 
         plot_data = self.palmout_xy.data.isel(time=time_index)
 
