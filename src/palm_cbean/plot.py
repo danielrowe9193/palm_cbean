@@ -89,7 +89,7 @@ class PlotPalmOutXZ:
 
         plot_data = self.palmout_xz.data.isel(time=time_index)
 
-        w = plot_data.isel(y_xz=y_xz_index)
+        w = plot_data.isel(y_xz=y_xz_index)["w_xz"]
 
         y_slice = plot_data.isel(y_xz=y_xz_index).y_xz.values
 
@@ -101,7 +101,7 @@ class PlotPalmOutXZ:
             x_data=self.palmout_xz.x,
             y_data=self.palmout_xz.z,
             plot_data=w,
-            var="w",
+            var="w_xz",
             title=f"Vertical Component of Wind at {y_slice} m\nFrame {time_index}\nElapsed Time {elapsed_time:.0f} s",
             x_label="x",
             y_label="z",

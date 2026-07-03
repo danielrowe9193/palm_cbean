@@ -62,9 +62,11 @@ class Calculations:
 
         elapsed_time_ns = data["time"].values
 
-        elapsed_time_s = elapsed_time_ns / np.timedelta64(1, "s")
+        # print(type(elapsed_time_ns))
+        #
+        # elapsed_time_s = elapsed_time_ns / np.timedelta64(1, "s")
 
-        return elapsed_time_s
+        return elapsed_time_ns
 
 
 class PlotUtils:
