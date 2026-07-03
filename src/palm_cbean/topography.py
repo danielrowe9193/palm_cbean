@@ -99,6 +99,8 @@ class Topography:
         further testing is required for other resolutions and their compatibility with
         PALM
 
+        There needs to be work done for the zero contours, when downscaling.
+
         :param final_resolution: The final resolution of the topography file, in meters.
         :return: None
         """
