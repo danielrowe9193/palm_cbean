@@ -3,6 +3,7 @@ import imageio.v2 as imageio
 import plot
 import subprocess
 import utils
+import validation
 
 from palmout import (
     PalmOutXZ, PalmOutXY
@@ -37,8 +38,7 @@ class Animator:
         :return:
         """
 
-        if type(self.palm_out) is not PalmOutXY:
-            return TypeError("Expected type of PalmOut is PalmOutXY.")
+        validation.require_palmout_xy(self.palm_out)
 
         Path(self.temp_frame_storage).mkdir(exist_ok=True)
         print("Generated temporary frame storage directory.")
@@ -61,8 +61,39 @@ class Animator:
 
         return None
 
-    def generate_frames_zy(self, storage_directory: str, y_xz_index: int = 0):
-        ...
+    def generate_frames_xz(self, variable: str, y_xz_index: int = 0):
+        """
+        Generates and stores frames to a temporary file store.
+
+        Expects PalmOutXZ object for these frames to be created successfully.
+
+        :param y_xz_index: The y index of the _xz data to be animated.
+        :param variable: The variable to be plotted.
+        :return:
+        """
+
+        validation.require_palmout_xz(self.palm_out)
+
+        Path(self.temp_frame_storage).mkdir(exist_ok=True)
+        print("Generated temporary frame storage directory.")
+
+        print("Generating frames ... ")
+
+        palm_out_plot = plot.PlotPalmOutXZ(
+            palmout=self.palm_out,
+            storage_directory=self.temp_frame_storage,
+        )
+
+        frames = self.palm_out.data.time.values
+        for frame, _ in enumerate(frames):
+
+            if variable == "wspeed":
+                palm_out_plot.wind_speed_contour_fill_plot(time_index=frame, zu_xy_index=zu_xy_index)
+                print(f"Frame {frame:4d} stored in {self.temp_frame_storage}")
+
+        print(f"\nAll frames generated and stored in {self.temp_frame_storage}")
+
+        return None
 
     def animate_mp4(self, mp4_name: str, new_frame_directory_name: str | Path, keep_frames: bool = False):
         """
