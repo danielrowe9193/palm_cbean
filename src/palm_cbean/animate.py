@@ -64,44 +64,6 @@ class Animator:
     def generate_frames_zy(self, storage_directory: str, y_xz_index: int = 0):
         ...
 
-    def animate_gif(self, gif_name: str, new_frame_directory_name: str | Path, keep_frames: bool = False):
-        """
-        Creates an animated gif using the frames stored in the temporary frame store.
-        By default, this method will delete the temporary frame store.
-        Stores the animated gif in the plots directory of the project.
-
-        WARNING: This method should be called only after frames have been generated to the temporary frame storage directory.
-
-        :param gif_name: The name of the animated GIF.
-        :param new_frame_directory_name: The name of directory frames should be stored in, if keep_frames=True.
-        :param keep_frames: Determines if to keep the temporary frame store or not.
-        :return:
-        """
-
-        print("Creating animated gif...\n")
-
-        new_frame_directory = Path(f"../../plots/{new_frame_directory_name}")
-
-        if keep_frames is not False:
-            frame_dir = Path(self.temp_frame_storage).rename(new_frame_directory)
-            print(f"keep_frames=True. Frames are being stored at {frame_dir}.\n")
-        else:
-            frame_dir = Path(self.temp_frame_storage)
-            print(f"keep_frames=False. The frames will remain in the temporary frame store.")
-
-        gif_path = config.Constants.plot_storage_directory / gif_name
-
-        with imageio.get_writer(gif_path, mode="I", duration=0.2) as writer:
-            for file in frame_dir.iterdir():
-                image = imageio.imread(file)
-                writer.append_data(image)
-
-        print(f"Animated GIF stored at {gif_path}")
-
-        utils.DirectoryManagement.clear_temp_frame_dir()
-
-        return None
-
     def animate_mp4(self, mp4_name: str, new_frame_directory_name: str | Path, keep_frames: bool = False):
         """
         Creates MP4 video using the frames stored in the temporary frame store.
