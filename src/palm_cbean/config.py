@@ -46,4 +46,11 @@ class PlotElements:
             long_name="Meridional Component of Wind",
             units=r"$ms^{-1}$"
         ),
+        "w": dict(
+            long_name="Vertical Component of Wind",
+            units=r"$ms^{-1}$",
+            cmap="RdBu",
+            levels=np.linspace(-5, 5, 21),
+            cb_ticks=np.linspace(-5, 5, 21),
+        ),
     }
