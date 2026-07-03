@@ -4,7 +4,7 @@ import palmout
 def require_palmout_xy(obj) -> None:
     if not isinstance(obj, palmout.PalmOutXY):
         raise TypeError(
-            "Expected type of PalmOut is PalmOutXY."
+            f"Expected PalmOutXY, got {type(obj).__name__}"
         )
 
     return None
@@ -13,7 +13,7 @@ def require_palmout_xy(obj) -> None:
 def require_palmout_xz(obj) -> None:
     if not isinstance(obj, palmout.PalmOutXZ):
         raise TypeError(
-            "Expected type of PalmOut is PalmOutXZ."
+            f"Expected PalmOutXZ, got {type(obj).__name__}"
         )
 
     return None
