@@ -88,7 +88,10 @@ class Animator:
         for frame, _ in enumerate(frames):
 
             if variable == "wspeed":
-                palm_out_plot.wind_speed_contour_fill_plot(time_index=frame, zu_xy_index=zu_xy_index)
+                palm_out_plot.wind_speed_contour_fill_plot(time_index=frame, y_xz_index=y_xz_index)
+                print(f"Frame {frame:4d} stored in {self.temp_frame_storage}")
+            elif variable == "w":
+                palm_out_plot.w_contour_fill_plot(time_index=frame, y_xz_index=y_xz_index)
                 print(f"Frame {frame:4d} stored in {self.temp_frame_storage}")
 
         print(f"\nAll frames generated and stored in {self.temp_frame_storage}")
