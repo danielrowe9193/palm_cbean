@@ -90,7 +90,7 @@ class Animator:
             if variable == "wspeed":
                 palm_out_plot.wind_speed_contour_fill_plot(time_index=frame, y_xz_index=y_xz_index)
                 print(f"Frame {frame:4d} stored in {self.temp_frame_storage}")
-            elif variable == "w":
+            elif variable == "w_xz":
                 palm_out_plot.w_contour_fill_plot(time_index=frame, y_xz_index=y_xz_index)
                 print(f"Frame {frame:4d} stored in {self.temp_frame_storage}")
 
