@@ -130,7 +130,7 @@ class PlotUtils:
 
         color_bar = fig.colorbar(
             contour_fill,
-            label=var["long_name"] + var["units"]
+            label=f"{var['long_name']} / {var['units']}"
         )
         color_bar.set_ticks(
             var["cb_ticks"]
