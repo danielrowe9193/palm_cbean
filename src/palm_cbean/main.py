@@ -15,16 +15,6 @@ utils.DirectoryManagement.make_plots_directory()
 bds_topo = Topography(
     filepath=config.Constants.bds_topography_path
 )
-bds_topo.make_shape_even()
-bds_topo.flip()
-bds_topo.mask()
-# bds_topo.downscale(final_resolution=100)
-# bds_topo.smooth()
-# bds_topo.mask()
-
-print(
-    f"{bds_topo.dataset}"
-)
 
 palmout_xy = palmout.PalmOutXY(
     palm_out_filepath=Path("../../data/toy_model_xy.002.nc")
@@ -32,17 +22,16 @@ palmout_xy = palmout.PalmOutXY(
 palmout_xy.normalise()
 palmout_xy.update_data_with_normalised_coords()
 
+palmout_xz = palmout.PalmOutXZ(
+    palm_out_filepath=Path("../../data/bds_test9_xz.000.nc")
+)
+palmout_xz.normalise()
+palmout_xz.update_data_with_normalised_coords()
 
-# plot.PlotTopography(bds_topo).plot_elevation()
-# plot.PlotTopography(bds_topo).plot_xz_cross_section(norm_y=0.5)
-# plot = plot.PlotPalmOutXY(
-#     palmout=palmout_xy,
-#     storage_directory=config.Constants.plot_storage_directory,
-# )
-# plot.wind_speed_contour_fill_plot(time_index=20, zu_xy_index=2)
+print(palmout_xz.data)
 
-anim = animate.Animator(palm_out=palmout_xy)
-anim.generate_frames_xy(variable="wspeed", zu_xy_index=2)
-# gif_anim.animate_gif(gif_name="test.gif", new_frame_directory_name="toy_model_xy.002", keep_frames=False)
-anim.animate_mp4(mp4_name="test.mp4", new_frame_directory_name="toy_model_xy.002")
+anim = animate.Animator(palm_out=palmout_xz)
+# anim.generate_frames_xy(variable="wspeed", zu_xy_index=2)
+anim.generate_frames_xz(variable="w_xz", y_xz_index=2)
+# anim.animate_mp4(mp4_name="test.mp4", new_frame_directory_name="toy_model_xy.002")
 
