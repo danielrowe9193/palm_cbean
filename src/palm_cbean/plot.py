@@ -113,14 +113,14 @@ class PlotPalmOutXZ:
 
         return None
 
-    def wind_speed_contour_fill_plot(self, time_index: int, zu_xy_index: int = 0):
+    def wind_speed_contour_fill_plot(self, time_index: int, y_xz_index: int = 0):
         """
         Plots the wind speed in the xy plane.
 
         Saves the figure to the plot directory.
 
         :param time_index:
-        :param zu_xy_index:
+        :param y_xz_index:
         :return:
         """
 
@@ -128,9 +128,9 @@ class PlotPalmOutXZ:
 
         plot_data = self.palmout_xz.data.isel(time=time_index)
 
-        wind_speed = plot_data.isel(y_xz=zu_xy_index)["w_xz"].values[::-1]
+        wind_speed = plot_data.isel(y_xz=y_xz_index)["w_xz"].values[::-1]
 
-        y_slice = plot_data.isel(y_xz=zu_xy_index)["y_xz"].values
+        y_slice = plot_data.isel(y_xz=y_xz_index)["y_xz"].values
 
         elapsed_time_ns = plot_data["time"].values
 
