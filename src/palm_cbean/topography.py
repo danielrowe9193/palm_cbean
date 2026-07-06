@@ -22,7 +22,7 @@ class Topography:
         self.elevation = self.source.read(1)
         self.resolution = self.source.transform[0]
 
-        self.x, self.y = np.meshgrid(
+        self.height, self.width = np.meshgrid(
             np.arange(self.source.height), np.arange(self.source.width), indexing="ij"
         )
 
@@ -41,8 +41,8 @@ class Topography:
         :return:
         """
 
-        x = self.x[:, 0]
-        y = self.y[0, :]
+        x = np.linspace(0, self.shape[0], self.shape[0])
+        y = np.linspace(0, self.shape[1], self.shape[1])
 
         norm_x = (x - x.min()) / (x.max() - x.min())
         norm_y = (y - y.min()) / (y.max() - y.min())
@@ -87,9 +87,23 @@ class Topography:
 
         return None
 
-    def pad(self, padding_amount: int) -> None:
-        """Adds padding around the original topography file."""
-        pass
+    def pad(self, amount: int) -> None:
+        """
+        Pad the topography file with 0 elevation values.
+
+        Pads the topography file in all directions with the designated padding amount.
+        :param amount: The amount of padding to apply to the topography file, meters.
+        :return: None.
+        """
+
+        grid_points = utils.Calculations.distance_to_grid_points(amount, self.resolution)
+
+        self.elevation = np.pad(
+            array=self.elevation,
+            pad_width=grid_points
+        )
+
+        return None
 
     def downscale(self, final_resolution: int) -> None:
         """
@@ -110,8 +124,8 @@ class Topography:
 
         scale = self.resolution / final_resolution
         self.elevation = zoom(self.elevation, (scale, scale))
-        self.x = zoom(self.x, (scale, scale))
-        self.y = zoom(self.y, (scale, scale))
+        self.height = zoom(self.height, (scale, scale))
+        self.width = zoom(self.width, (scale, scale))
         self.resolution = self.resolution / scale
 
         return None
