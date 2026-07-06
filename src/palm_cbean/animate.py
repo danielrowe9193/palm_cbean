@@ -138,7 +138,7 @@ class Animator:
             check=True,
         )
         
-        print(f"Animated GIF stored at {mp4_file_path}")
+        print(f"Animated .mp4 stored at {mp4_file_path}")
 
         utils.DirectoryManagement.clear_temp_frame_dir()
 
