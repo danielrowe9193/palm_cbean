@@ -68,6 +68,22 @@ class Calculations:
 
         return elapsed_time_ns
 
+    @staticmethod
+    def distance_to_grid_points(distance: int, resolution: int) -> float:
+        """
+        Converts a distance to the number of grid points.
+
+        To be used in combination with the .pad method in the Topography class.
+
+        :param distance: The prescribed distance, in meters.
+        :param resolution: The resolution, in meters.
+        :return:
+        """
+
+        grid_points = distance / resolution
+
+        return grid_points
+
 
 class PlotUtils:
     """
