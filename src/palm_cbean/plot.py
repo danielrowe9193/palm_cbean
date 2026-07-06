@@ -39,9 +39,7 @@ class PlotPalmOutXY:
 
         level = plot_data.isel(zu_xy=zu_xy_index).zu_xy.values
 
-        elapsed_time_ns = plot_data["time"].values
-
-        elapsed_time_s = elapsed_time_ns / np.timedelta64(1, "s")
+        elapsed_time_s = utils.Calculations.calculate_elapsed_time(plot_data["time"].values)
 
         utils.PlotUtils.plot_contour_fill(
             fig=fig,
@@ -132,9 +130,7 @@ class PlotPalmOutXZ:
 
         y_slice = plot_data.isel(y_xz=y_xz_index)["y_xz"].values
 
-        elapsed_time_ns = plot_data["time"].values
-
-        elapsed_time_s = elapsed_time_ns / np.timedelta64(1, "s")
+        elapsed_time_s = utils.Calculations.calculate_elapsed_time(plot_data["time"].values)
 
         utils.PlotUtils.plot_contour_fill(
             fig=fig,
