@@ -77,7 +77,7 @@ class Calculations:
 
         :param distance: The prescribed distance, in meters.
         :param resolution: The resolution, in meters.
-        :return:
+        :return: The grid points to do the padding over.
         """
 
         grid_points = distance / resolution
