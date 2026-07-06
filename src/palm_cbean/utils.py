@@ -69,7 +69,7 @@ class Calculations:
         return elapsed_time_ns
 
     @staticmethod
-    def distance_to_grid_points(distance: int, resolution: int) -> float:
+    def distance_to_grid_points(distance: int, resolution: int) -> int:
         """
         Converts a distance to the number of grid points.
 
@@ -82,7 +82,7 @@ class Calculations:
 
         grid_points = distance / resolution
 
-        return grid_points
+        return int(grid_points)
 
 
 class PlotUtils:
