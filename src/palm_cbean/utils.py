@@ -62,11 +62,9 @@ class Calculations:
 
         elapsed_time_ns = data["time"].values
 
-        # print(type(elapsed_time_ns))
-        #
-        # elapsed_time_s = elapsed_time_ns / np.timedelta64(1, "s")
+        elapsed_time_s = elapsed_time_ns / 1e9
 
-        return elapsed_time_ns
+        return elapsed_time_s
 
     @staticmethod
     def distance_to_grid_points(distance: int, resolution: int) -> int:
