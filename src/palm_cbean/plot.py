@@ -8,69 +8,6 @@ from pathlib import Path
 from topography import Topography
 
 
-class PlotPalmOutXZ:
-    def __init__(self, palmout: PalmOutXZ, storage_directory: str | Path, frame: int):
-        """Initialize a PlotCrossSectionPalmOutXZ."""
-        self.palmout_xz = palmout
-        self.storage_directory = Path(storage_directory)
-        self.frame = frame
-
-        self.plot_data = self.palmout_xz.data.isel(time=self.frame)
-
-        self.fig, self.ax = plt.subplots(figsize=(8, 10))
-
-    def u_contour_plot(self):
-        """Plots contour fill of the u component of the flow."""
-        u = self.plot_data.u.values[::-1]
-        u_contour_fill = self.ax.contourf(u, cmap="RdBu", levels=20)
-
-        self.ax.set(
-            title=f"Zonal Component of Flow at {self.plot_data['yv_xz'].values} m",
-            xlabel="x",
-            ylabel="z",
-        )
-
-        self.ax.grid()
-
-        return u_contour_fill
-
-    def wind_speed_contour_fill_plot(self, y_xz_index: int = 0):
-        """Generate contour plot at a given time index."""
-
-        wind_speed = self.plot_data.isel(y_xz=y_xz_index).wspeed_xz.values[::-1]
-
-        elapsed_time_ns = self.plot_data["time"].values
-
-        elapsed_time_s = elapsed_time_ns / np.timedelta64(1, "s")
-
-        wind_speed_contour_fill = self.ax.contourf(
-            self.palmout_xz.x,
-            self.palmout_xz.y,
-            wind_speed,
-            cmap="turbo",
-            levels=np.linspace(0, 10, 21),
-        )
-
-        wind_speed_colour_bar = self.fig.colorbar(wind_speed_contour_fill)
-        wind_speed_colour_bar.set_ticks(ticks=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
-        wind_speed_colour_bar.set_label("Wind Speed (m/s)")
-
-        self.ax.set(
-            title=f"Wind Speed at {self.plot_data.isel(y_xz=y_xz_index).zu_xy.values} m\nFrame {self.frame}\nElapsed Time {elapsed_time_s:.0f} s",
-            xlabel="x",
-            ylabel="y",
-        )
-
-        return wind_speed_contour_fill, wind_speed_colour_bar
-
-    def save_plot(self):
-        """Save the plot to the specified storage directory."""
-        frame_name = f"frame_{self.frame:05d}"
-        frame_path = self.storage_directory / frame_name
-        plt.savefig(frame_path)
-        plt.close()
-
-
 class PlotPalmOutXY:
     """Plot a cross-section Palm Out xy object."""
 
@@ -102,9 +39,7 @@ class PlotPalmOutXY:
 
         level = plot_data.isel(zu_xy=zu_xy_index).zu_xy.values
 
-        elapsed_time_ns = plot_data["time"].values
-
-        elapsed_time_s = elapsed_time_ns / np.timedelta64(1, "s")
+        elapsed_time_s = utils.Calculations.calculate_elapsed_time(plot_data["time"].values)
 
         utils.PlotUtils.plot_contour_fill(
             fig=fig,
@@ -124,10 +59,96 @@ class PlotPalmOutXY:
 
         return None
 
-    @staticmethod
-    def _show_plot():
-        """Show the plot."""
-        plt.show()
+
+class PlotPalmOutXZ:
+    """Plot a cross-section Palm Out xy object."""
+
+    def __init__(
+        self,
+        palmout: PalmOutXZ,
+        storage_directory: str | Path,
+    ):
+        """Initialize a PlotCrossSectionPalmOutXY."""
+        self.palmout_xz = palmout
+        self.storage_directory = Path(storage_directory)
+
+    def w_contour_fill_plot(self, time_index: int, y_xz_index: int = 0) -> None:
+        """
+        Plots a contour fill of vertical wind.
+
+        Saves the plot to a given directory.
+
+        :param time_index: The time iteration step.
+        :param y_xz_index: The y-index at which to take the xz slice.
+        :return: None
+        """
+
+        fig, ax = plt.subplots(figsize=(8, 4), constrained_layout=True, dpi=300)
+
+        plot_data = self.palmout_xz.data.isel(time=time_index)
+
+        w = plot_data.isel(y_xz=y_xz_index)["w_xz"]
+
+        y_slice = plot_data.isel(y_xz=y_xz_index).y_xz.values
+
+        elapsed_time = utils.Calculations.calculate_elapsed_time(data=plot_data)
+
+        utils.PlotUtils.plot_contour_fill(
+            fig=fig,
+            ax=ax,
+            x_data=self.palmout_xz.x,
+            y_data=self.palmout_xz.z,
+            plot_data=w,
+            var="w_xz",
+            title=f"Vertical Component of Wind at {y_slice} m\nFrame {time_index}\nElapsed Time {elapsed_time:.0f} s",
+            x_label="x",
+            y_label="z",
+        )
+
+        frame_name = f"frame_{time_index:05d}.png"
+
+        utils.PlotUtils.save_plot(storage_directory=self.storage_directory, plot_name=frame_name)
+
+        return None
+
+    def wind_speed_contour_fill_plot(self, time_index: int, y_xz_index: int = 0):
+        """
+        Plots the wind speed in the xy plane.
+
+        Saves the figure to the plot directory.
+
+        :param time_index:
+        :param y_xz_index:
+        :return:
+        """
+
+        fig, ax = plt.subplots(figsize=(10, 10), constrained_layout=True)
+
+        plot_data = self.palmout_xz.data.isel(time=time_index)
+
+        wind_speed = plot_data.isel(y_xz=y_xz_index)["w_xz"].values[::-1]
+
+        y_slice = plot_data.isel(y_xz=y_xz_index)["y_xz"].values
+
+        elapsed_time_s = utils.Calculations.calculate_elapsed_time(plot_data["time"].values)
+
+        utils.PlotUtils.plot_contour_fill(
+            fig=fig,
+            ax=ax,
+            x_data=self.palmout_xz.x,
+            y_data=self.palmout_xz.z,
+            plot_data=wind_speed,
+            var="w_speed",
+            title=f"Wind Speed at {y_slice} m\nFrame {time_index}\nElapsed Time {elapsed_time_s:.0f} s",
+            x_label="x",
+            y_label="z",
+        )
+
+        frame_name = f"frame_{time_index:05d}.png"
+
+        utils.PlotUtils.save_plot(storage_directory=self.storage_directory, plot_name=frame_name)
+
+        return None
 
 
 class PlotTopography:

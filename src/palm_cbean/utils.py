@@ -52,6 +52,36 @@ class Calculations:
 
         return lvls
 
+    @staticmethod
+    def calculate_elapsed_time(data: xr.Dataset):
+        """
+        Calculates the elapsed time in seconds.
+        :param data: Data that contains times. Expects the name of the time dimension to be 'time'.
+        :return: New time data in seconds.
+        """
+
+        elapsed_time_ns = data["time"].values
+
+        elapsed_time_s = elapsed_time_ns / 1e9
+
+        return elapsed_time_s
+
+    @staticmethod
+    def distance_to_grid_points(distance: int, resolution: int) -> int:
+        """
+        Converts a distance to the number of grid points.
+
+        To be used in combination with the .pad method in the Topography class.
+
+        :param distance: The prescribed distance, in meters.
+        :param resolution: The resolution, in meters.
+        :return: The grid points to do the padding over.
+        """
+
+        grid_points = distance / resolution
+
+        return int(grid_points)
+
 
 class PlotUtils:
     """
@@ -114,7 +144,7 @@ class PlotUtils:
 
         color_bar = fig.colorbar(
             contour_fill,
-            label=var["long_name"] + var["units"]
+            label=f"{var['long_name']} / {var['units']}"
         )
         color_bar.set_ticks(
             var["cb_ticks"]
@@ -247,6 +277,4 @@ class DirectoryManagement:
             Path(f"../../plots/temp_frame_store/{frame}").unlink()
 
         return None
-
-
 

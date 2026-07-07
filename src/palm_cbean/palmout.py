@@ -13,7 +13,7 @@ class PalmOut(ABC):
         :param palm_out_filepath: The filepath
         """
         self.palm_out_filepath = Path(palm_out_filepath)
-        self.data = xarray.open_dataset(self.palm_out_filepath, engine='netcdf4')
+        self.data = xarray.open_dataset(self.palm_out_filepath, engine='netcdf4', decode_timedelta=False)
 
         self.x: int | None = None
         self.y: int | None = None
