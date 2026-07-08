@@ -38,5 +38,5 @@ palmout_xz.update_data_with_normalised_coords()
 anim = animate.Animator(palm_out=palmout_xz)
 # anim.generate_frames_xy(variable="wspeed", zu_xy_index=2)
 # anim.generate_frames_xz(variable="w_xz", y_xz_index=3)
-# anim.animate_mp4(mp4_name="test.mp4", new_frame_directory_name="toy_model_xy.002")
+anim.animate_mp4(mp4_name="test.mp4", new_frame_directory_name="toy_model_xy.002")
 
