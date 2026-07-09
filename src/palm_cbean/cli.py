@@ -2,6 +2,8 @@
 
 import argparse
 
+from pathlib import Path
+
 
 def parse_arguments():
     """
@@ -22,6 +24,7 @@ def parse_arguments():
     parser.add_argument(
         "--dp",
         required=True,
+        type=Path,
         help="Path to the palm output file."
     )
 
