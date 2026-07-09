@@ -29,6 +29,48 @@ class Animator:
         self.palm_out = palm_out
         self.temp_frame_storage = "../../plots/temp_frame_store/"
 
+    def generate_frames(self, variable: str, index: int = 0):
+        """
+        Generates and stores frames to a temporary file store.
+
+        Automatically detects the type of PalmOut.
+
+        :param variable: The variable to be plotted.
+        :param index: The index on which the horizontal/vertical slice should be made.
+        :return: None
+        """
+
+        Path(self.temp_frame_storage).mkdir(exist_ok=True)
+        print("Generated temporary frame storage directory.")
+
+        print("Generating frames ... ")
+
+        palm_out_plot = None
+
+        if validation.is_palmout_xy(self.palm_out) is True:
+            palm_out_plot = plot.PlotPalmOutXY(
+                palmout=self.palm_out,
+                storage_directory=self.temp_frame_storage,
+            )
+
+        if validation.is_palmout_xz(self.palm_out) is True:
+            palm_out_plot = plot.PlotPalmOutXY(
+                palmout=self.palm_out,
+                storage_directory=self.temp_frame_storage,
+            )
+
+        frames = self.palm_out.data.time.values
+        for frame, _ in enumerate(frames):
+
+            if variable == "wspeed":
+                palm_out_plot.wind_speed_contour_fill_plot(time_index=frame, zu_xy_index=index)
+                print(f"Frame {frame:4d} stored in {self.temp_frame_storage}")
+
+        print(f"\nAll frames generated and stored in {self.temp_frame_storage}")
+
+        return None
+
+
     def generate_frames_xy(self, variable: str, zu_xy_index: int = 0):
         """
         Generates and stores frames to a temporary file store.
@@ -128,7 +170,7 @@ class Animator:
         subprocess.run(
             [
                 "ffmpeg",
-                "-framerate", "5",
+                "-framerate", "30",
                 "-i", "frame_%05d.png",
                 "-c:v", "libx264",
                 "-pix_fmt", "yuv420p",

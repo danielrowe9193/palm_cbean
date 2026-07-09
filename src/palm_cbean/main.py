@@ -32,6 +32,7 @@ if args.po == "xz":
     po = palmout.Loaders.load_xz(args.dp)
 
 anim = animate.Animator(palm_out=po)
-anim.generate_frames_xy(variable=args.var, zu_xy_index=args.i)
+anim.generate_frames(variable=args.var, index=args.i)
+# anim.generate_frames_xy(variable=args.var, zu_xy_index=args.i)
 # anim.generate_frames_xz(variable="w_xz", y_xz_index=3)
 anim.animate_mp4(mp4_name=args.an, new_frame_directory_name=args.fdn)
