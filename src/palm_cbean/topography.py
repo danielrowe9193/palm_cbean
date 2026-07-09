@@ -3,9 +3,11 @@ import rasterio
 import xarray as xr
 import utils
 
+
 from config import Constants
 from pathlib import Path
 from scipy.ndimage import (zoom, gaussian_filter)
+from skimage.transform import rescale
 
 
 class Topography:
@@ -125,10 +127,10 @@ class Topography:
             )
 
         scale = self.resolution / final_resolution
-        self.elevation = zoom(self.elevation, (scale, scale))
-        self.height = zoom(self.height, (scale, scale))
-        self.width = zoom(self.width, (scale, scale))
-        self.resolution = self.resolution / scale
+        self.elevation = rescale(self.elevation, scale, order=1, anti_aliasing=True)
+        self.height = rescale(self.height, scale, order=1)
+        self.width = rescale(self.width, scale, order=1)
+        self.resolution = final_resolution
 
         return None
 
