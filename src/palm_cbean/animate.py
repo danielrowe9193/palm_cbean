@@ -45,7 +45,7 @@ class Animator:
 
         print("Generating frames ... ")
 
-        if validation.is_palmout_xy(self.palm_out) is True:
+        if validation.is_palmout_xy(self.palm_out) is not False:
             palm_out_plot = plot.PlotPalmOutXY(
                 palmout=self.palm_out,
                 storage_directory=self.temp_frame_storage,
@@ -66,7 +66,7 @@ class Animator:
         else:
             pass
 
-        if validation.is_palmout_xz(self.palm_out) is True:
+        if validation.is_palmout_xz(self.palm_out) is not False:
             palm_out_plot = plot.PlotPalmOutXY(
                 palmout=self.palm_out,
                 storage_directory=self.temp_frame_storage,
