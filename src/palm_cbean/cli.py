@@ -32,6 +32,7 @@ def parse_arguments():
 
     parser.add_argument(
         "--i",
+        type=int,
         help="The index representing the slice of the given palm output."
     )
 
