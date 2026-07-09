@@ -13,18 +13,18 @@ utils.DirectoryManagement.make_plots_directory()
 
 args = cli.parse_arguments()
 
-bds_topo = Topography(
-    filepath=config.Constants.bds_topography_path
-)
-bds_topo.mask()
-bds_topo.flip()
-bds_topo.make_shape_even()
-bds_topo.pad(amount=5000)
-bds_topo.downscale(final_resolution=100)
-bds_topo.mask()
-print(bds_topo.shape)
+# bds_topo = Topography(
+#     filepath=config.Constants.bds_topography_path
+# )
+# bds_topo.mask()
+# bds_topo.flip()
+# bds_topo.make_shape_even()
+# bds_topo.pad(amount=5000)
+# bds_topo.downscale(final_resolution=100)
+# bds_topo.mask()
+# print(bds_topo.shape)
 
-plot.PlotTopography(bds_topo).plot_elevation()
+# plot.PlotTopography(bds_topo).plot_elevation()
 
 palmout_xy = palmout.PalmOutXY(
     palm_out_filepath=Path(args.input_xy)
