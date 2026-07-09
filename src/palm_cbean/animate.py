@@ -73,7 +73,6 @@ class Animator:
 
         return None
 
-
     def generate_frames_xy(self, variable: str, zu_xy_index: int = 0):
         """
         Generates and stores frames to a temporary file store.

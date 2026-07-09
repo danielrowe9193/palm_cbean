@@ -59,6 +59,18 @@ class PlotPalmOutXY:
 
         return None
 
+    def w_contour_fill_plot(self, time_index: int, y_xz_index: int = 0) -> None:
+        """
+        Plots a contour fill of vertical wind.
+
+        Saves the plot to a given directory.
+
+        :param time_index: The time iteration step.
+        :param y_xz_index: The y-index at which to take the xz slice.
+        :return: None
+        """
+        pass
+
 
 class PlotPalmOutXZ:
     """Plot a cross-section Palm Out xy object."""
