@@ -13,17 +13,13 @@ def parse_arguments():
         description="palm_cbean: Utilities for handling palm in Caribbean context."
     )
 
-    sub_parsers = parser.add_subparsers(dest="command", help="Interface different modules of palm-cbean.")
-
-    topography_sub_parser = sub_parsers.add_parser("topography")
-
     parser.add_argument(
-        "--input-xy",
+        "--input_xy",
         help="Path to the PALM xy output file."
     )
 
     parser.add_argument(
-        "--input-xz",
+        "--input_xz",
         help="Path to the PALM xz output file."
     )
 
@@ -33,22 +29,22 @@ def parse_arguments():
     )
 
     parser.add_argument(
-        "--zu-xy-index",
+        "--zu_xy_index",
         help="The vertical index to choose in the xy plane."
     )
 
     parser.add_argument(
-        "--y-xz-index",
+        "--y_xz_index",
         help="The meridional index to choose in the xz plane."
     )
 
     parser.add_argument(
-        "--anim-name",
+        "--anim_name",
         help="Name of the animation."
     )
 
     parser.add_argument(
-        "--frame-dir-name",
+        "--frame_dir_name",
         help="Name of frame storage directory."
     )
 
