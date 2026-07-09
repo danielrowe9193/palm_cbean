@@ -47,7 +47,7 @@ class PlotPalmOutXY:
             x_data=self.palmout_xy.x,
             y_data=self.palmout_xy.y,
             plot_data=wind_speed,
-            var="w_speed",
+            var="wspeed_xy",
             title=f"Wind Speed at {level} m\nFrame {time_index}\nElapsed Time {elapsed_time_s:.0f} s",
             x_label="x",
             y_label="y",

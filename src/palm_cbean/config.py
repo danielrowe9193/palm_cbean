@@ -31,8 +31,8 @@ class PlotElements:
             linewidths=0.5,
             contour_fill_levels=np.linspace(0, 400, 21)
         ),
-        "w_speed": dict(
-            long_name="Wind Speed",
+        "wspeed_xy": dict(
+            long_name="Wind Speed in the XY Plane",
             units=r"$ms^{-1}$",
             cmap="turbo",
             levels=np.linspace(0, 100, 101),
