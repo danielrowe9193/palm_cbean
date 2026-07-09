@@ -14,37 +14,34 @@ def parse_arguments():
     )
 
     parser.add_argument(
-        "--input_xy",
-        help="Path to the PALM xy output file."
+        "--po",
+        required=True,
+        help="Define the palm output. Options are 'xy', 'xz'"
     )
 
     parser.add_argument(
-        "--input_xz",
-        help="Path to the PALM xz output file."
+        "--dp",
+        required=True,
+        help="Path to the palm output file."
     )
 
     parser.add_argument(
-        "--variable",
-        help="Variable name to be visualized."
+        "--var",
+        help="Variable to be visualized."
     )
 
     parser.add_argument(
-        "--zu_xy_index",
-        help="The vertical index to choose in the xy plane."
+        "--i",
+        help="The index representing the slice of the given palm output."
     )
 
     parser.add_argument(
-        "--y_xz_index",
-        help="The meridional index to choose in the xz plane."
-    )
-
-    parser.add_argument(
-        "--anim_name",
+        "--an",
         help="Name of the animation."
     )
 
     parser.add_argument(
-        "--frame_dir_name",
+        "--fdn",
         help="Name of frame storage directory."
     )
 
