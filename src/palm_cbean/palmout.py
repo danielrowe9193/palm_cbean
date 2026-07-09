@@ -13,11 +13,11 @@ class PalmOut(ABC):
         :param palm_out_filepath: The filepath
         """
 
-        if type(palm_out_filepath) is None:
-            pass
-        else:
+        try:
             self.palm_out_filepath = Path(palm_out_filepath)
             self.data = xarray.open_dataset(self.palm_out_filepath, engine='netcdf4', decode_timedelta=False)
+        except:
+            pass
 
         self.x: int | None = None
         self.y: int | None = None
@@ -78,4 +78,3 @@ class PalmOutXY(PalmOut):
         self.data = self.data.assign_coords(norm_x=self.x)
         self.data = self.data.assign_coords(norm_y=self.y)
         return self
-
