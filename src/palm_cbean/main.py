@@ -24,12 +24,14 @@ args = cli.parse_arguments()
 
 # plot.PlotTopography(bds_topo).plot_elevation()
 
-if args.input_xy is not None:
-    palmout_xy = palmout.Loaders.load_xy(args.input_xy)
-if args.input_xz is not None:
-    palmout_xz = palmout.Loaders.load_xz(args.input_xz)
+po = None
 
-anim = animate.Animator(palm_out=palmout_xz)
-anim.generate_frames_xy(variable=args.variable, zu_xy_index=args.zu_xy_index)
+if args.po == "xy":
+    po = palmout.Loaders.load_xy(args.dp)
+if args.po == "xz":
+    po = palmout.Loaders.load_xz(args.dp)
+
+anim = animate.Animator(palm_out=po)
+anim.generate_frames_xy(variable=args.var, zu_xy_index=args.zu_xy_index)
 # anim.generate_frames_xz(variable="w_xz", y_xz_index=3)
 anim.animate_mp4(mp4_name=args.anim_name, new_frame_directory_name=args.frame_dir_name)
