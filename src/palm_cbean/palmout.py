@@ -78,3 +78,23 @@ class PalmOutXY(PalmOut):
         self.data = self.data.assign_coords(norm_x=self.x)
         self.data = self.data.assign_coords(norm_y=self.y)
         return self
+
+
+class Loaders:
+    """
+    Utilities for loading PalmOut objects.
+    """
+
+    @staticmethod
+    def load_xy(filepath: Path) -> PalmOutXY:
+        palm = PalmOutXY(filepath)
+        palm.normalise()
+        palm.update_data_with_normalised_coords()
+        return palm
+
+    @staticmethod
+    def load_xz(filepath: Path) -> PalmOutXZ:
+        palm = PalmOutXZ(filepath)
+        palm.normalise()
+        palm.update_data_with_normalised_coords()
+        return palm
