@@ -6,7 +6,7 @@ import utils
 import validation
 
 from palmout import (
-    PalmOutXZ, PalmOutXY
+    PalmOut, PalmOutXZ, PalmOutXY
 )
 from pathlib import Path
 
@@ -45,13 +45,26 @@ class Animator:
 
         print("Generating frames ... ")
 
-        palm_out_plot = None
-
         if validation.is_palmout_xy(self.palm_out) is True:
             palm_out_plot = plot.PlotPalmOutXY(
                 palmout=self.palm_out,
                 storage_directory=self.temp_frame_storage,
             )
+
+            frames = self.palm_out.data.time.values
+            for frame, _ in enumerate(frames):
+
+                if variable == "wspeed":
+                    palm_out_plot.wind_speed_contour_fill_plot(time_index=frame, zu_xy_index=index)
+                    print(f"Frame {frame:4d} stored in {self.temp_frame_storage}")
+                elif variable == "w_xz":
+                    palm_out_plot.w_contour_fill_plot(time_index=frame, y_xz_index=index)
+                    print(f"Frame {frame:4d} stored in {self.temp_frame_storage}")
+
+            print(f"\nAll frames generated and stored in {self.temp_frame_storage}")
+
+        else:
+            pass
 
         if validation.is_palmout_xz(self.palm_out) is True:
             palm_out_plot = plot.PlotPalmOutXY(
@@ -59,17 +72,20 @@ class Animator:
                 storage_directory=self.temp_frame_storage,
             )
 
-        frames = self.palm_out.data.time.values
-        for frame, _ in enumerate(frames):
+            frames = self.palm_out.data.time.values
+            for frame, _ in enumerate(frames):
 
-            if variable == "wspeed":
-                palm_out_plot.wind_speed_contour_fill_plot(time_index=frame, zu_xy_index=index)
-                print(f"Frame {frame:4d} stored in {self.temp_frame_storage}")
-            elif variable == "w_xz":
-                palm_out_plot.w_contour_fill_plot(time_index=frame, y_xz_index=index)
-                print(f"Frame {frame:4d} stored in {self.temp_frame_storage}")
+                if variable == "wspeed":
+                    palm_out_plot.wind_speed_contour_fill_plot(time_index=frame, zu_xy_index=index)
+                    print(f"Frame {frame:4d} stored in {self.temp_frame_storage}")
+                elif variable == "w_xz":
+                    palm_out_plot.w_contour_fill_plot(time_index=frame, y_xz_index=index)
+                    print(f"Frame {frame:4d} stored in {self.temp_frame_storage}")
 
-        print(f"\nAll frames generated and stored in {self.temp_frame_storage}")
+            print(f"\nAll frames generated and stored in {self.temp_frame_storage}")
+
+        else:
+            pass
 
         return None
 
@@ -100,7 +116,6 @@ class Animator:
             if variable == "wspeed":
                 palm_out_plot.wind_speed_contour_fill_plot(time_index=frame, zu_xy_index=zu_xy_index)
                 print(f"Frame {frame:4d} stored in {self.temp_frame_storage}")
-
 
         print(f"\nAll frames generated and stored in {self.temp_frame_storage}")
 
