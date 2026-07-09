@@ -1,8 +1,6 @@
 import animate
 import cli
-import config
 import palmout
-import plot
 import utils
 
 from pathlib import Path
@@ -26,20 +24,10 @@ args = cli.parse_arguments()
 
 # plot.PlotTopography(bds_topo).plot_elevation()
 
-palmout_xy = palmout.PalmOutXY(
-    palm_out_filepath=args.input_xy
-)
-palmout_xy.normalise()
-palmout_xy.update_data_with_normalised_coords()
-
-palmout_xz = palmout.PalmOutXZ(
-    palm_out_filepath=args.input_xz
-)
-palmout_xz.normalise()
-palmout_xz.update_data_with_normalised_coords()
+palmout_xy = palmout.Loaders.load_xy(args.input_xy) if args.input_xy else None
+palmout_xz = palmout.Loaders.load_xz(args.input_xz) if args.input_xz else None
 
 anim = animate.Animator(palm_out=palmout_xz)
 anim.generate_frames_xy(variable=args.variable, zu_xy_index=args.zu_xy_index)
 # anim.generate_frames_xz(variable="w_xz", y_xz_index=3)
 anim.animate_mp4(mp4_name=args.anim_name, new_frame_directory_name=args.frame_dir_name)
-
