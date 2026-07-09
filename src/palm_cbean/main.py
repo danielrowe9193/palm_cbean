@@ -27,13 +27,13 @@ args = cli.parse_arguments()
 # plot.PlotTopography(bds_topo).plot_elevation()
 
 palmout_xy = palmout.PalmOutXY(
-    palm_out_filepath=Path(args.input_xy)
+    palm_out_filepath=args.input_xy
 )
 palmout_xy.normalise()
 palmout_xy.update_data_with_normalised_coords()
 
 palmout_xz = palmout.PalmOutXZ(
-    palm_out_filepath=Path(args.input_xz)
+    palm_out_filepath=args.input_xz
 )
 palmout_xz.normalise()
 palmout_xz.update_data_with_normalised_coords()
