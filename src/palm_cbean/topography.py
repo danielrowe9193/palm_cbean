@@ -3,9 +3,10 @@ import rasterio
 import xarray as xr
 import utils
 
+
 from config import Constants
 from pathlib import Path
-from scipy.ndimage import (zoom, gaussian_filter)
+from skimage.transform import rescale
 
 
 class Topography:
@@ -113,7 +114,8 @@ class Topography:
         further testing is required for other resolutions and their compatibility with
         PALM
 
-        There needs to be work done for the zero contours, when downscaling.
+        Utilising the skimage.transform.rescale function, downscaling can be achieved without
+        artifacting at the zero contours
 
         :param final_resolution: The final resolution of the topography file, in meters.
         :return: None
@@ -125,27 +127,10 @@ class Topography:
             )
 
         scale = self.resolution / final_resolution
-        self.elevation = zoom(self.elevation, (scale, scale))
-        self.height = zoom(self.height, (scale, scale))
-        self.width = zoom(self.width, (scale, scale))
-        self.resolution = self.resolution / scale
-
-        return None
-
-    def smooth(self):
-        """
-        Smooth the topography using a gaussian filter.
-
-        This method should be called last, after downscaling, masking and similar methods have been applied.
-
-        The sigma levels for smoothing are controlled by the SIGMA parameter in the Constants object of the config module.
-        :return:
-        None
-        """
-
-        self.elevation[self.elevation == np.nan] = 0
-
-        self.elevation = gaussian_filter(self.elevation, sigma=Constants.SIGMA)
+        self.elevation = rescale(self.elevation, scale, order=1, anti_aliasing=True)
+        self.height = rescale(self.height, scale, order=1)
+        self.width = rescale(self.width, scale, order=1)
+        self.resolution = final_resolution
 
         return None
 
