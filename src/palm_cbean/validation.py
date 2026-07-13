@@ -3,13 +3,13 @@ import palmout
 
 def is_palmout_xy(obj) -> bool:
     """Checks if PalmOutXY."""
-    if isinstance(obj, palmout.PalmOutXY):
+    if type(obj) == palmout.PalmOutXY:
         return True
 
 
 def is_palmout_xz(obj) -> bool:
     """Checks if PalmOutXY."""
-    if isinstance(obj, palmout.PalmOutXZ):
+    if type(obj) == palmout.PalmOutXZ:
         return True
 
 
