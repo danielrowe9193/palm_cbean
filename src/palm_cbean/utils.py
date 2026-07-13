@@ -60,7 +60,7 @@ class Calculations:
         :return: New time data in seconds.
         """
 
-        elapsed_time_ns = data["time"].values
+        elapsed_time_ns = data.values
 
         elapsed_time_s = elapsed_time_ns / 1e9
 
