@@ -45,7 +45,7 @@ class Animator:
 
         print("Generating frames ... ")
 
-        if validation.is_palmout_xy(self.palm_out) is not False:
+        if validation.is_palmout_xy(self.palm_out):
 
             print("PALMOUTXY")
 
@@ -66,7 +66,7 @@ class Animator:
 
             print(f"\nAll frames generated and stored in {self.temp_frame_storage}")
 
-        elif validation.is_palmout_xz(self.palm_out) is not False:
+        elif validation.is_palmout_xz(self.palm_out):
 
             print("PALMOUTXZ")
 
