@@ -1,10 +1,10 @@
 import config
-import imageio.v2 as imageio
 import plot
 import subprocess
 import utils
 import validation
 
+from frames import Frames
 from palmout import (
     PalmOut, PalmOutXZ, PalmOutXY
 )
@@ -28,6 +28,8 @@ class Animator:
         """
         self.palm_out = palm_out
         self.temp_frame_storage = "../../plots/temp_frame_store/"
+
+        DeprecationWarning("This method of animation is being phased out.")
 
     def generate_frames(self, variable: str, index: int = 0):
         """
@@ -175,13 +177,13 @@ class Animator:
         :param keep_frames: Determines if to keep the temporary frame store or not.
         :return:
         """
-        
+
         print("Creating MP4 video ... \n")
-        
+
         new_frame_directory = Path(f"../../plots/{new_frame_directory_name}")
 
         mp4_file_path = config.Constants.plot_storage_directory / mp4_name
-        
+
         if keep_frames is not False:
             frame_dir = Path(self.temp_frame_storage).rename(new_frame_directory)
             print(f"keep_frames=True. Frames are being stored at {frame_dir}.\n")
@@ -201,12 +203,58 @@ class Animator:
             cwd=self.temp_frame_storage,
             check=True,
         )
-        
+
         print(f"Animated .mp4 stored at {mp4_file_path}")
 
         utils.DirectoryManagement.clear_temp_frame_dir()
 
         return None
 
-        
-        
+
+class Animator2:
+    """
+    Utilities for animating outputs from PALM.
+    """
+
+    def __init__(self, frames: Frames):
+        """
+        Initialise the animator with a Frames object.
+
+        Expects that the frames have already been generated and stored at the given frame directory. The Animator
+        will return an error through ffmpeg if there are no frames (or frames of the incorrect format).
+        :param frames: The frames to be animated.
+        """
+
+        self.frames = frames
+
+    def create_mp4(self, mp4_storage_directory: str, mp4_name: str):
+        """
+        Create mp4 animation from frames.
+
+        WARNING: This method should be called only after frames have been generated to the temporary frame storage directory.
+
+        :param mp4_storage_directory: The directory in which to store the mp4 animation.
+        :param mp4_name: The name of the mp4 animation.
+        :return: None
+        """
+
+        print("Creating MP4 video ... \n")
+
+        mp4_file_path = Path(mp4_storage_directory) / mp4_name
+
+        subprocess.run(
+            [
+                "ffmpeg",
+                "-framerate", "30",
+                "-i", "frame_%05d.png",
+                "-c:v", "libx264",
+                "-pix_fmt", "yuv420p",
+                str(mp4_file_path)
+            ],
+            cwd=self.frames.frame_storage_directory,
+            check=True,
+        )
+
+        print(f"Animated .mp4 stored at {mp4_file_path}")
+
+        return None

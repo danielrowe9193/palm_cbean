@@ -15,6 +15,56 @@ def parse_arguments():
         description="palm_cbean: Utilities for handling palm in Caribbean context."
     )
 
+    subparsers = parser.add_subparsers(
+        dest="command",
+        required=True,
+    )
+
+    topo = subparsers.add_parser(
+        "topography",
+        help="Generate topography."
+    )
+
+    topo.add_argument(
+        '--input',
+        type=Path,
+        required=True
+    )
+
+    topo.add_argument(
+        '--pad',
+        default=1000
+    )
+
+    topo.add_argument(
+        '--resolution',
+        default=100
+    )
+
+    animate = subparsers.add_parser(
+        "animate",
+        help="Animate PALM output."
+    )
+
+    animate.add_argument(
+        "--variable",
+        required=True,
+    )
+
+    animate.add_argument(
+        "--dir",
+        help='The directory to store the animation.',
+        required=True
+    )
+
+    animate.add_argument(
+        "--output",
+        help='The name of the animation.',
+        type=Path,
+        default="animation.mp4",
+        required=True
+    )
+
     parser.add_argument(
         "--po",
         required=True,

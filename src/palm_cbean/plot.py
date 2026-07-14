@@ -59,9 +59,9 @@ class PlotPalmOutXY:
 
         return None
 
-    def w_contour_fill_plot(self, time_index: int, y_xz_index: int = 0) -> None:
+    def w_contour_fill_plot(self, time_index: int, zu_xy_index: int = 0) -> None:
         """
-        Plots a contour fill of vertical wind.
+        Plots a contour fill of the vertical component of wind.
 
         Saves the plot to a given directory.
 
@@ -69,7 +69,34 @@ class PlotPalmOutXY:
         :param y_xz_index: The y-index at which to take the xz slice.
         :return: None
         """
-        pass
+
+        fig, ax = plt.subplots(figsize=(10, 10), constrained_layout=True)
+
+        plot_data = self.palmout_xy.data.isel(time=time_index)
+
+        wind_speed = plot_data.isel(zu_xy=zu_xy_index).w.values[::-1]
+
+        level = plot_data.isel(zu_xy=zu_xy_index).zu_xy.values
+
+        elapsed_time_s = utils.Calculations.calculate_elapsed_time(plot_data)
+
+        utils.PlotUtils.plot_contour_fill(
+            fig=fig,
+            ax=ax,
+            x_data=self.palmout_xy.x,
+            y_data=self.palmout_xy.y,
+            plot_data=wind_speed,
+            var="wspeed_xy",
+            title=f"Wind Speed at {level} m\nFrame {time_index}\nElapsed Time {elapsed_time_s:.0f} s",
+            x_label="x",
+            y_label="y",
+        )
+
+        frame_name = f"frame_{time_index:05d}.png"
+
+        utils.PlotUtils.save_plot(storage_directory=self.storage_directory, plot_name=frame_name)
+
+        return None
 
 
 class PlotPalmOutXZ:
@@ -103,7 +130,7 @@ class PlotPalmOutXZ:
 
         y_slice = plot_data.isel(y_xz=y_xz_index).y_xz.values
 
-        elapsed_time = utils.Calculations.calculate_elapsed_time(data=plot_data)
+        elapsed_time = utils.Calculations.calculate_elapsed_time(plot_data)
 
         utils.PlotUtils.plot_contour_fill(
             fig=fig,
@@ -142,7 +169,7 @@ class PlotPalmOutXZ:
 
         y_slice = plot_data.isel(y_xz=y_xz_index)["y_xz"].values
 
-        elapsed_time_s = utils.Calculations.calculate_elapsed_time(plot_data["time"].values)
+        elapsed_time_s = utils.Calculations.calculate_elapsed_time(plot_data)
 
         utils.PlotUtils.plot_contour_fill(
             fig=fig,
