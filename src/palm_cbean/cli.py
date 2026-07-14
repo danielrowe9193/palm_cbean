@@ -15,6 +15,19 @@ def parse_arguments():
         description="palm_cbean: Utilities for handling palm in Caribbean context."
     )
 
+    parser.add_argument(
+        '--po',
+        required=True,
+        help="Define the palm output. Options are 'xy', 'xz'"
+    )
+
+    parser.add_argument(
+        "--dp",
+        required=True,
+        type=Path,
+        help="Path to the palm output file."
+    )
+
     subparsers = parser.add_subparsers(
         dest="command",
         required=True,
@@ -47,56 +60,34 @@ def parse_arguments():
     )
 
     animate.add_argument(
-        "--variable",
-        required=True,
-    )
-
-    animate.add_argument(
-        "--dir",
-        help='The directory to store the animation.',
-        required=True
-    )
-
-    animate.add_argument(
-        "--output",
-        help='The name of the animation.',
-        type=Path,
-        default="animation.mp4",
-        required=True
-    )
-
-    parser.add_argument(
-        "--po",
-        required=True,
-        help="Define the palm output. Options are 'xy', 'xz'"
-    )
-
-    parser.add_argument(
-        "--dp",
-        required=True,
-        type=Path,
-        help="Path to the palm output file."
-    )
-
-    parser.add_argument(
         "--var",
-        help="Variable to be visualized."
+        required=True,
     )
 
-    parser.add_argument(
+    animate.add_argument(
         "--i",
         type=int,
         help="The index representing the slice of the given palm output."
     )
 
-    parser.add_argument(
-        "--an",
-        help="Name of the animation."
+    animate.add_argument(
+        "--dir",
+        help='The directory to store the animation.',
+        required=True,
+        default=Path("../../plots")
     )
 
-    parser.add_argument(
+    animate.add_argument(
         "--fdn",
         help="Name of frame storage directory."
+    )
+
+    animate.add_argument(
+        '--an',
+        help='The name of the animation.',
+        type=Path,
+        default='animation.mp4',
+        required=True
     )
 
     return parser.parse_args()

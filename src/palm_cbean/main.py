@@ -4,10 +4,6 @@ import frames
 import palmout
 import plot
 import topography as topo
-import utils
-
-utils.DirectoryManagement.make_data_directory()
-utils.DirectoryManagement.make_plots_directory()
 
 args = cli.parse_arguments()
 
@@ -34,8 +30,8 @@ if args.command == "topography":
 
     plot.PlotTopography(bds_topo).plot_elevation()
 
-anim = animate.Animator(palm_out=po)
-anim.generate_frames(variable=args.var, index=args.i)
+# anim = animate.Animator(palm_out=po)
+# anim.generate_frames(variable=args.var, index=args.i)
 # anim.generate_frames_xy(variable=args.var, zu_xy_index=args.i)
 # anim.generate_frames_xz(variable="w_xz", y_xz_index=3)
 # anim.animate_mp4(mp4_name=args.an, new_frame_directory_name=args.fdn)
