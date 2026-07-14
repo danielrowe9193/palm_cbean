@@ -50,5 +50,5 @@ if args.command == 'animate':
     )
     anim2.create_mp4(
         mp4_storage_directory=args.dir,
-        mp4_name=args.output
+        mp4_name=args.an
     )

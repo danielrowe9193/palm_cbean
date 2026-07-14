@@ -87,7 +87,6 @@ def parse_arguments():
         help='The name of the animation.',
         type=Path,
         default='animation.mp4',
-        required=True
     )
 
     return parser.parse_args()
