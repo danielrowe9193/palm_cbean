@@ -41,7 +41,6 @@ if args.command == 'gen_frames':
     frames.generate_frames()
 
 if args.command == 'animate':
-
     anim2 = animate.Animator(
         frame_storage_directory=args.fdn
     )
