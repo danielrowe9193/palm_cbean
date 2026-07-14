@@ -47,7 +47,7 @@ class Frames:
             frames = self.po.data.time.values
             for frame, _ in enumerate(frames):
 
-                if self.var == 'wspeed':
+                if self.var == 'wspeed_xy':
                     palm_out_plot.wind_speed_contour_fill_plot(time_index=frame, zu_xy_index=self.index)
                     print(f'Frame {frame:4d} stored in {self.frame_storage_directory}')
                 elif self.var == 'w_xz':
