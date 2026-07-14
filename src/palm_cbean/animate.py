@@ -4,7 +4,6 @@ import subprocess
 import utils
 import validation
 
-from frames import Frames
 from palmout import (
     PalmOut, PalmOutXZ, PalmOutXY
 )
@@ -216,16 +215,16 @@ class Animator2:
     Utilities for animating outputs from PALM.
     """
 
-    def __init__(self, frames: Frames):
+    def __init__(self, frame_storage_directory: str):
         """
-        Initialise the animator with a Frames object.
+        Initialise the animator with a directory containing frames.
 
         Expects that the frames have already been generated and stored at the given frame directory. The Animator
         will return an error through ffmpeg if there are no frames (or frames of the incorrect format).
-        :param frames: The frames to be animated.
+        :param frame_storage_directory: Directory containing the frames to be animated.
         """
 
-        self.frames = frames
+        self.frame_storage_directory = Path(frame_storage_directory)
 
     def create_mp4(self, mp4_storage_directory: str, mp4_name: str):
         """
@@ -251,7 +250,7 @@ class Animator2:
                 "-pix_fmt", "yuv420p",
                 str(mp4_file_path)
             ],
-            cwd=self.frames.frame_storage_directory,
+            cwd=self.frame_storage_directory,
             check=True,
         )
 

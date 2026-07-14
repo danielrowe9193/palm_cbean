@@ -30,13 +30,7 @@ if args.command == "topography":
 
     plot.PlotTopography(bds_topo).plot_elevation()
 
-# anim = animate.Animator(palm_out=po)
-# anim.generate_frames(variable=args.var, index=args.i)
-# anim.generate_frames_xy(variable=args.var, zu_xy_index=args.i)
-# anim.generate_frames_xz(variable="w_xz", y_xz_index=3)
-# anim.animate_mp4(mp4_name=args.an, new_frame_directory_name=args.fdn)
-
-if args.command == 'animate':
+if args.command == 'gen_frames':
     frames = frames.Frames(
         frame_storage_directory=args.fdn,
         po=po,
@@ -45,8 +39,10 @@ if args.command == 'animate':
     )
     frames.generate_frames()
 
+if args.command == 'animate':
+
     anim2 = animate.Animator2(
-        frames=frames
+        frame_storage_directory=args.fdn
     )
     anim2.create_mp4(
         mp4_storage_directory=args.dir,

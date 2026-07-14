@@ -54,20 +54,35 @@ def parse_arguments():
         default=100
     )
 
+    gen_frames = subparsers.add_parser(
+        "gen_frames",
+        help="Generate and store frames in a directory."
+    )
+
+    gen_frames.add_argument(
+        "--fdn",
+        help="Name of frame storage directory."
+    )
+
+    gen_frames.add_argument(
+        "--var",
+        required=True,
+    )
+
+    gen_frames.add_argument(
+        "--i",
+        type=int,
+        help="The index representing the slice of the given palm output."
+    )
+
     animate = subparsers.add_parser(
         "animate",
         help="Animate PALM output."
     )
 
     animate.add_argument(
-        "--var",
-        required=True,
-    )
-
-    animate.add_argument(
-        "--i",
-        type=int,
-        help="The index representing the slice of the given palm output."
+        "--fdn",
+        help="The frame storage directory."
     )
 
     animate.add_argument(
@@ -75,11 +90,6 @@ def parse_arguments():
         help='The directory to store the animation.',
         required=True,
         default=Path("../../plots")
-    )
-
-    animate.add_argument(
-        "--fdn",
-        help="Name of frame storage directory."
     )
 
     animate.add_argument(
