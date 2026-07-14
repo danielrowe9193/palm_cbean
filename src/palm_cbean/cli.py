@@ -15,27 +15,22 @@ def parse_arguments():
         description="palm_cbean: Utilities for handling palm in Caribbean context."
     )
 
-    subparsers = parser.add_subparsers(
-        dest="command",
-        required=True,
-    )
-
-    palmout = subparsers.add_parser(
-        'palmout',
-        help='Post-process the PalmOut files.'
-    )
-
-    palmout.add_argument(
+    parser.add_argument(
         '--po',
         required=True,
         help="Define the palm output. Options are 'xy', 'xz'"
     )
 
-    palmout.add_argument(
+    parser.add_argument(
         "--dp",
         required=True,
         type=Path,
         help="Path to the palm output file."
+    )
+
+    subparsers = parser.add_subparsers(
+        dest="command",
+        required=True,
     )
 
     topo = subparsers.add_parser(

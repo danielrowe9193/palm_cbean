@@ -9,13 +9,12 @@ args = cli.parse_arguments()
 
 po = None
 
-if args.command == 'palmout':
-    if args.po == "xy":
-        po = palmout.Loaders.load_xy(args.dp)
-        print(type(po))
-    if args.po == "xz":
-        po = palmout.Loaders.load_xz(args.dp)
-        print(type(po))
+if args.po == "xy":
+    po = palmout.Loaders.load_xy(args.dp)
+    print(type(po))
+if args.po == "xz":
+    po = palmout.Loaders.load_xz(args.dp)
+    print(type(po))
 
 if args.command == "topography":
     bds_topo = topo.Topography(
