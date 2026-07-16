@@ -1,4 +1,5 @@
 import animate
+import argcomplete
 import cli
 import frames
 import palmout
@@ -6,6 +7,8 @@ import plot
 import topography as topo
 
 args = cli.parse_arguments()
+
+argcomplete.autocomplete(args)
 
 if args.command == "topography":
     bds_topo = topo.Topography(
