@@ -11,10 +11,8 @@ po = None
 
 if args.po == "xy":
     po = palmout.Loaders.load_xy(args.dp)
-    print(type(po))
 if args.po == "xz":
     po = palmout.Loaders.load_xz(args.dp)
-    print(type(po))
 
 if args.command == "topography":
     bds_topo = topo.Topography(
@@ -24,7 +22,10 @@ if args.command == "topography":
     bds_topo.flip()
     bds_topo.make_shape_even()
     bds_topo.pad(amount=args.pad)
-    bds_topo.downscale(final_resolution=args.resolution)
+    if args.resolution is None:
+        pass
+    else:
+        bds_topo.downscale(final_resolution=args.resolution)
     bds_topo.mask()
     print(bds_topo.shape)
 
