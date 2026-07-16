@@ -42,7 +42,7 @@ if args.command == 'gen_frames':
 
 if args.command == 'animate':
     anim2 = animate.Animator(
-        frame_storage_directory=args.fdn
+        frame_storage_directory=args.fd
     )
     anim2.create_mp4(
         mp4_storage_directory=args.dir,
