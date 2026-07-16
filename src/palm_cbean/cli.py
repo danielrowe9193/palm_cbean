@@ -53,7 +53,11 @@ def parse_arguments():
         '--resolution',
         default=100
     )
-
+    
+    topo.add_argument(
+        '--output',
+        help='Path to store the topography file.'
+    )
     gen_frames = subparsers.add_parser(
         "gen_frames",
         help="Generate and store frames in a directory."
