@@ -15,19 +15,6 @@ def parse_arguments():
         description="palm_cbean: Utilities for handling palm in Caribbean context."
     )
 
-    parser.add_argument(
-        '--po',
-        required=True,
-        help="Define the palm output. Options are 'xy', 'xz'"
-    )
-
-    parser.add_argument(
-        "--dp",
-        required=True,
-        type=Path,
-        help="Path to the palm output file."
-    )
-
     subparsers = parser.add_subparsers(
         dest="command",
         required=True,
@@ -58,9 +45,23 @@ def parse_arguments():
         '--output',
         help='Path to store the topography file.'
     )
+
     gen_frames = subparsers.add_parser(
         "gen_frames",
         help="Generate and store frames in a directory."
+    )
+
+    gen_frames.add_argument(
+        '--po',
+        required=True,
+        help="Specify the palm output. Options are 'xy', 'xz'"
+    )
+
+    gen_frames.add_argument(
+        "--dp",
+        required=True,
+        type=Path,
+        help="Path to the palm output file."
     )
 
     gen_frames.add_argument(
