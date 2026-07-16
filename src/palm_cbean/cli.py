@@ -81,7 +81,7 @@ def parse_arguments():
     )
 
     animate.add_argument(
-        "--fdn",
+        "--fd",
         help="The frame storage directory."
     )
 
