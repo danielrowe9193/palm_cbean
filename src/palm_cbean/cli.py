@@ -1,5 +1,6 @@
 # Module for command line interface.
 
+import argcomplete
 import argparse
 
 from pathlib import Path
@@ -103,6 +104,8 @@ def parse_arguments():
         type=Path,
         default='animation.mp4',
     )
+
+    argcomplete.autocomplete(parser)
 
     return parser.parse_args()
 
