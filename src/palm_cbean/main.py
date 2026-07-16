@@ -7,13 +7,6 @@ import topography as topo
 
 args = cli.parse_arguments()
 
-po = None
-
-if args.po == "xy":
-    po = palmout.Loaders.load_xy(args.dp)
-if args.po == "xz":
-    po = palmout.Loaders.load_xz(args.dp)
-
 if args.command == "topography":
     bds_topo = topo.Topography(
         filepath=args.input
@@ -32,6 +25,14 @@ if args.command == "topography":
     plot.PlotTopography(bds_topo).plot_elevation()
 
 if args.command == 'gen_frames':
+
+    po = None
+
+    if args.po == "xy":
+        po = palmout.Loaders.load_xy(args.dp)
+    if args.po == "xz":
+        po = palmout.Loaders.load_xz(args.dp)
+
     frames = frames.Frames(
         frame_storage_directory=args.fdn,
         po=po,
