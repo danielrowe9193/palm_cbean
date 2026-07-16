@@ -117,10 +117,12 @@ class Topography:
         :return: None
         """
 
-        if final_resolution <= self.resolution:
+        if final_resolution < self.resolution:
             raise ValueError(
-                f"Final resolution cannot be equal to or less than the original resolution."
+                f'Final resolution cannot be less than the original resolution.'
             )
+        elif final_resolution == self.resolution:
+            pass
 
         scale = self.resolution / final_resolution
         self.elevation = zoom(self.elevation, (scale, scale))
