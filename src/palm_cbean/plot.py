@@ -164,7 +164,7 @@ class PlotPalmOutXZ:
 
         plot_data = self.palmout_xz.data.isel(time=time_index)
 
-        wind_speed = plot_data.isel(y_xz=y_xz_index)["w_xz"].values[::-1]
+        wind_speed = plot_data.isel(y_xz=y_xz_index)["wspeed_xz"].values[::-1]
 
         y_slice = plot_data.isel(y_xz=y_xz_index)["y_xz"].values
 
