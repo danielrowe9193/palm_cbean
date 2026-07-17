@@ -34,12 +34,14 @@ def parse_arguments():
 
     topo.add_argument(
         '--pad',
-        default=1000
+        default=1000,
+        help='The amount of padding for the topography file, in meters.'
     )
 
     topo.add_argument(
-        '--resolution',
-        default=100
+        '--del',
+        default=100,
+        help='The resolution of the topography file, in meters.'
     )
     
     topo.add_argument(
