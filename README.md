@@ -1,4 +1,95 @@
-Collection of scripts responsible for the post processing of PALM outputs done in the Caribbean.
+# palm_cbean
+
+`palm_cbean` is a Python package for pre-processing and post-processing
+simulations produced by the PALM atmospheric model.
+
+The package provides command-line tools for
+
+- generating PALM topography files from raster elevation data,
+- visualising PALM outputs,
+- generating image sequences,
+- creating animations from rendered frames.
+
+Although originally developed for Caribbean case studies, the package can
+be used with any PALM simulation.
+
+# Installation
+`palm_cbean` can be accessed by cloning the repository
+```bash
+git clone https://github.com/danielrowe9193/palm_cbean.git
+```
+Before interacting with the module, activate the `venv` using
+```bash
+source PALM/venvPalm/bin/activate
+```
+if on `alpha` or on `kratos-head`
+```bash
+source PythonRelated/internpython/intern/bin/activate
+```
+
+## Topography
+The `topography` command converts a raster Digital Elevation Model
+(e.g. GeoTIFF) into a PALM-compatible topography file.
+
+Usage:
+```bash
+python main.py topography --input /path/to/.tif --pad [pad] --del [resolution] --output /path/to/_topo
+```
+
+Example:
+```bash
+python main.py topography --input ../../data/terrain.tif --pad 10000 --del 100 --output /test_sim/INPUT/test_sim_topo
+```
+```markdown
+
+Arguments:
+`--input`   - Input GeoTIFF (`.tif`) elevation file
+`--pad`     - Padding (in meters) added around the domain. Converted to grid points internally.
+`--del`     - The resolution, $\Delta$, of the elevation file (in meters). This is the resolution that the topography will be downscaled to.
+`--output`  - The PALM-compatible topography file, as an ASCII file.
+```
+
+## Generating Frames
+The `gen_frames` command generates plots of the palmout file at each time step, storing the frames to the
+given directory.
+
+Usage:
+```bash
+python main.py gen_frames --po [palmout] --dp /path/to/data.nc --fdn [storage frame directory] --var [variable] --i [index]
+```
+
+Example:
+```bash
+python main.py gen_frames --po 'xy' --dp ../JOBS/test_sim/OUTPUT/test_sim_xy.000.nc --fdn ../../plots/test_sim_xy.000.frames --var 'p_xy' --i 23
+```
+```markdown
+Arguments:
+`--po`      - Specification of the PalmOut type. Options are 'xy' and 'xz'.
+`--dp`      - The datapath of the palmout data.
+`--fdn`     - The name of the directory in which to store the frames.
+`--var`     - The name of the variable to visualise.
+`--i`       - The index on which to choose the slice of the data.
+```
+
+## Animation
+The `animation` function creates an `.mp4` from a directory of adequately labelled frames.
+
+Usage:
+```bash
+python main.py animate --fd [frame directory] --dir [animation storage directory] --an [animation name]
+```
+
+Example:
+```bash
+python main.py animate --fd ../../plots/test_sim_xy.000.frames --dir ../../plots --an test_sim_xy.000.mp4
+```
+
+```markdown
+Arguments:
+`--fd`      - The directory containing the frames.
+`--dir`     - The directory in which to store the animation.
+`--an`      - The name of the animation.
+```
 
 # Running A Toy Model In PALM
 
@@ -158,29 +249,3 @@ Once PALM is completed, it will create a directory called `OUTPUT/` in the exper
 /home/kratos-head/palm/current_version/JOBS/toy_model/OUTPUT/
 ```
 In this directory will be all the `.nc` files that are created.
-
-## Visualization Using Python
-Visualization of palm output files is facilitated using a package of post-processing python scripts called `palm_cbean`. To access the package we must clone the github repository to our machine using
-```bash
-git clone https://github.com/danielrowe9193/palm_cbean.git
-```
-For this example, the latest version of `palm_cbean` is already on `kratos-head` and the scripts are set up for visualization. When cloning the git respository is successful, create the directories `data/` and `plots/` using
-```bash
-mkdir data plots
-```
-This step is already completed and the directories should be already there for your perusal. Then, copy the `xy` file you want to visualize into the `data/` directory of the project (`_xz` visualization coming soon). Once this is completed, edit `main.py` such that
-```python
-palmout_xy = palmout.PalmOutXY(
-    palm_out_filepath=Path("../../data/{name_of_your_data.nc}")
-)
-```
-and 
-```python
-gif_anim.generate_frames_xy(variable="{variable_to_visualize}", zu_xy_index={index_of_vertical_level})
-gif_anim.animate_gif(gif_name="{name_of_gif.gif}", new_frame_directory_name="{name_of_directory_to_store_frames}", keep_frames=False)
-```
-Once all variables are edited sufficiently, run the python script using
-```bash
-python main.py &> log.main &
-```
-Where the visualization will take place in the background and progress will be noted in `log.main`. 
