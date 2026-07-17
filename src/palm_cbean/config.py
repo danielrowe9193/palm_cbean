@@ -5,11 +5,7 @@ from pathlib import Path
 
 class Constants:
     plot_storage_directory = Path("../../plots/")
-
-    bds_topography_path = Path("../../data/BRB_DEM_10M_UTM21N.tif")
-
-    _xy_data = Path("../../data/flow_around_cube_cyclic_xy.000.nc")
-    _xz_data = Path("../../data/bds_test9_xz.000.nc")
+    data_storage_directory = Path("../../data/")
 
     SIGMA = 1.5
 
