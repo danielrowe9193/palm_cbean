@@ -45,7 +45,7 @@ python main.py topography --input ../../data/terrain.tif --pad 10000 --del 100 -
 Arguments:
 `--input`   - Input GeoTIFF (`.tif`) elevation file
 `--pad`     - Padding (in meters) added around the domain. Converted to grid points internally.
-`--del`     - The resolution, $\Delta$, of the elevation file (in meters). This is the resolution that the topography will be downscaled to.
+`--del`     - The resolution of the elevation file (in meters). This is the resolution that the topography will be downscaled to.
 `--output`  - The PALM-compatible topography file, as an ASCII file.
 ```
 
