@@ -1,148 +1,52 @@
-import config
-import imageio.v2 as imageio
-import plot
 import subprocess
-import utils
-import validation
 
-from palmout import (
-    PalmOutXZ, PalmOutXY
-)
 from pathlib import Path
 
 
 class Animator:
     """
     Utilities for animating outputs from PALM.
-
-    Creates animated GIFs of the simulation results.
     """
 
-    def __init__(self, palm_out: PalmOutXY | PalmOutXZ):
+    def __init__(self, frame_storage_directory: str):
         """
-        Initialise the animator with PalmOut data.
+        Initialise the animator with a directory containing frames.
 
-        Expects the data to be of type palmout.PalmOut and currently
-        animates _xy and _xz files.
-        :param palm_out: The PalmOut file to be animated.
-        """
-        self.palm_out = palm_out
-        self.temp_frame_storage = "../../plots/temp_frame_store/"
-
-    def generate_frames_xy(self, variable: str, zu_xy_index: int = 0):
-        """
-        Generates and stores frames to a temporary file store.
-
-        :param zu_xy_index: The vertical index of the _xy data to be animated.
-        :param variable: The variable to be plotted.
-        :return:
+        Expects that the frames have already been generated and stored at the given frame directory. The Animator
+        will return an error through ffmpeg if there are no frames (or frames of the incorrect format).
+        :param frame_storage_directory: Directory containing the frames to be animated.
         """
 
-        validation.require_palmout_xy(self.palm_out)
+        self.frame_storage_directory = Path(frame_storage_directory)
 
-        Path(self.temp_frame_storage).mkdir(exist_ok=True)
-        print("Generated temporary frame storage directory.")
-
-        print("Generating frames ... ")
-
-        palm_out_plot = plot.PlotPalmOutXY(
-            palmout=self.palm_out,
-            storage_directory=self.temp_frame_storage,
-        )
-
-        frames = self.palm_out.data.time.values
-        for frame, _ in enumerate(frames):
-
-            if variable == "wspeed":
-                palm_out_plot.wind_speed_contour_fill_plot(time_index=frame, zu_xy_index=zu_xy_index)
-                print(f"Frame {frame:4d} stored in {self.temp_frame_storage}")
-
-        print(f"\nAll frames generated and stored in {self.temp_frame_storage}")
-
-        return None
-
-    def generate_frames_xz(self, variable: str, y_xz_index: int = 0):
+    def create_mp4(self, mp4_storage_directory: str, mp4_name: str):
         """
-        Generates and stores frames to a temporary file store.
-
-        Expects PalmOutXZ object for these frames to be created successfully.
-
-        :param y_xz_index: The y index of the _xz data to be animated.
-        :param variable: The variable to be plotted.
-        :return:
-        """
-
-        validation.require_palmout_xz(self.palm_out)
-
-        Path(self.temp_frame_storage).mkdir(exist_ok=True)
-        print("Generated temporary frame storage directory.")
-
-        print("Generating frames ... ")
-
-        palm_out_plot = plot.PlotPalmOutXZ(
-            palmout=self.palm_out,
-            storage_directory=self.temp_frame_storage,
-        )
-
-        frames = self.palm_out.data.time.values
-        for frame, _ in enumerate(frames):
-
-            if variable == "wspeed":
-                palm_out_plot.wind_speed_contour_fill_plot(time_index=frame, y_xz_index=y_xz_index)
-                print(f"Frame {frame:4d} stored in {self.temp_frame_storage}")
-            elif variable == "w_xz":
-                palm_out_plot.w_contour_fill_plot(time_index=frame, y_xz_index=y_xz_index)
-                print(f"Frame {frame:4d} stored in {self.temp_frame_storage}")
-
-        print(f"\nAll frames generated and stored in {self.temp_frame_storage}")
-
-        return None
-
-    def animate_mp4(self, mp4_name: str, new_frame_directory_name: str | Path, keep_frames: bool = False):
-        """
-        Creates MP4 video using the frames stored in the temporary frame store.
-        By default, this method will delete the temporary frame store.
-        Stores the animated gif in the plots directory of the project.
+        Create mp4 animation from frames.
 
         WARNING: This method should be called only after frames have been generated to the temporary frame storage directory.
 
-        :param mp4_name: The name of the animated GIF.
-        :param new_frame_directory_name: The name of directory frames should be stored in, if keep_frames=True.
-        :param keep_frames: Determines if to keep the temporary frame store or not.
-        :return:
+        :param mp4_storage_directory: The directory in which to store the mp4 animation.
+        :param mp4_name: The name of the mp4 animation.
+        :return: None
         """
-        
-        print("Creating MP4 video ... \n")
-        
-        new_frame_directory = Path(f"../../plots/{new_frame_directory_name}")
 
-        mp4_file_path = config.Constants.plot_storage_directory / mp4_name
-        
-        if keep_frames is not False:
-            frame_dir = Path(self.temp_frame_storage).rename(new_frame_directory)
-            print(f"keep_frames=True. Frames are being stored at {frame_dir}.\n")
-        else:
-            frame_dir = Path(self.temp_frame_storage)
-            print(f"keep_frames=False. The frames will remain in the temporary frame store.")
+        print("Creating MP4 video ... \n")
+
+        mp4_file_path = Path(mp4_storage_directory) / mp4_name
 
         subprocess.run(
             [
                 "ffmpeg",
-                "-framerate", "5",
+                "-framerate", "30",
                 "-i", "frame_%05d.png",
                 "-c:v", "libx264",
                 "-pix_fmt", "yuv420p",
                 str(mp4_file_path)
             ],
-            cwd=self.temp_frame_storage,
+            cwd=self.frame_storage_directory,
             check=True,
         )
-        
+
         print(f"Animated .mp4 stored at {mp4_file_path}")
 
-        utils.DirectoryManagement.clear_temp_frame_dir()
-
         return None
-
-        
-        

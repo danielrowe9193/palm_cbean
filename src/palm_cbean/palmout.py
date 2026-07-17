@@ -1,4 +1,6 @@
 from abc import ABC, abstractmethod
+from typing import Type
+
 import xarray
 
 from pathlib import Path
@@ -12,6 +14,7 @@ class PalmOut(ABC):
         Initialize a PalmOut object with a specified filepath.
         :param palm_out_filepath: The filepath
         """
+
         self.palm_out_filepath = Path(palm_out_filepath)
         self.data = xarray.open_dataset(self.palm_out_filepath, engine='netcdf4', decode_timedelta=False)
 
@@ -75,3 +78,48 @@ class PalmOutXY(PalmOut):
         self.data = self.data.assign_coords(norm_y=self.y)
         return self
 
+
+class PalmOutYZ(PalmOut):
+
+    def show_info(self):
+        """Print information about the PalmOut dataset."""
+        print(self.data)
+
+    def normalise(self) -> Type[NotImplementedError]:
+        """Normalise x and y coordinates between 0 and 1."""
+        self.y = (self.data.y.values - self.data.x.values.min()) / (self.data.x.values.max() - self.data.x.values.min())
+        self.z = (self.data.y.values - self.data.y.values.min()) / (self.data.y.values.max() - self.data.y.values.min())
+        return NotImplementedError
+
+    def update_data_with_normalised_coords(self):
+        """Update the data of the PalmOut with the normalised coordinates."""
+        self.data = self.data.assign_coords(norm_x=self.x)
+        self.data = self.data.assign_coords(norm_y=self.y)
+        return NotImplementedError
+
+
+class Loaders:
+    """
+    Utilities for loading PalmOut objects.
+    """
+
+    @staticmethod
+    def load_xy(filepath: Path) -> PalmOutXY:
+        palm = PalmOutXY(filepath)
+        palm.normalise()
+        palm.update_data_with_normalised_coords()
+        return palm
+
+    @staticmethod
+    def load_xz(filepath: Path) -> PalmOutXZ:
+        palm = PalmOutXZ(filepath)
+        palm.normalise()
+        palm.update_data_with_normalised_coords()
+        return palm
+
+    @staticmethod
+    def load_yz(filepath: Path) -> PalmOutYZ:
+        palm = PalmOutYZ(filepath)
+        palm.normalise()
+        palm.update_data_with_normalised_coords()
+        return palm

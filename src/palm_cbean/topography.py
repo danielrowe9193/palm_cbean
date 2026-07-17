@@ -121,10 +121,12 @@ class Topography:
         :return: None
         """
 
-        if final_resolution <= self.resolution:
+        if final_resolution < self.resolution:
             raise ValueError(
-                f"Final resolution cannot be equal to or less than the original resolution."
+                f'Final resolution cannot be less than the original resolution.'
             )
+        elif final_resolution == self.resolution:
+            pass
 
         scale = self.resolution / final_resolution
         self.elevation = rescale(self.elevation, scale, order=1, anti_aliasing=True)
@@ -134,10 +136,13 @@ class Topography:
 
         return None
 
-    def to_ascii(self, output_directory: str, output_filename: str) -> None:
-        """Convert the elevation to ascii and store it in the given directory."""
-
-        topography_file_name = f"{output_filename}_{1 / self.resolution}m_topo"
+    def save_topo(self, topography_file_name: str, output_directory: str) -> None:
+        """
+        Convert the elevation to ascii and store it in the given directory.
+        :param topography_file_name: The name of the topography file. Should not contain an extension.
+        :param output_directory: The directory in which to save the topography file.
+        :return:
+        """
 
         topography_file_directory = Path(output_directory)
 

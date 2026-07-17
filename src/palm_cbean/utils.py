@@ -82,6 +82,10 @@ class Calculations:
 
         return int(grid_points)
 
+    @staticmethod
+    def calculate_wind_stress():
+        ...
+
 
 class PlotUtils:
     """
